@@ -5,27 +5,36 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Society Savings</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#f1f5f4;font-family:Arial,sans-serif;color:#172b35}
 header{background:#063044;color:white;padding:28px 22px;border-radius:0 0 25px 25px}
 header h1{margin:0 0 8px}
 header p{margin:0;color:#c7d8df}
-.card{background:white;margin:25px 16px;padding:25px;border-radius:20px;box-shadow:0 5px 25px #0000000b}
+.card{background:white;margin:20px 16px;padding:23px;border-radius:18px;box-shadow:0 5px 25px #0000000b}
 h2{margin-top:0}
-input{width:100%;padding:16px;margin:9px 0 17px;border:1px solid #d9e1e2;border-radius:12px;font-size:16px}
+input,select{width:100%;padding:15px;margin:8px 0 16px;border:1px solid #d9e1e2;border-radius:11px;font-size:16px;background:white}
+label{font-weight:bold;font-size:14px}
 button{width:100%;padding:16px;background:#087c65;color:white;border:0;border-radius:12px;font-size:16px;font-weight:bold;margin:7px 0}
 .secondary{background:#e5f2ee;color:#087c65}
-#message{margin-top:15px;line-height:1.5}
-.hidden{display:none}
+.hidden{display:none!important}
+#message,.status{margin-top:12px;line-height:1.5}
+.status{padding:14px;background:#eaf5f1;border-radius:10px}
+.success{text-align:center;padding:20px}
+.tick{font-size:65px;color:#07966d}
+.section{border-top:1px solid #eee;padding-top:18px;margin-top:20px}
 </style>
 </head>
+
 <body>
+
 <header>
 <h1>Society Savings</h1>
 <p>Your society account portal</p>
 </header>
 
+<!-- LOGIN AND REGISTRATION -->
 <div class="card" id="authCard">
 <h2 id="heading">Member Login</h2>
 <p id="description">Sign in using your registered mobile number.</p>
@@ -46,100 +55,360 @@ button{width:100%;padding:16px;background:#087c65;color:white;border:0;border-ra
 <p id="message"></p>
 </div>
 
-<div class="card hidden" id="dashboard">
-<h2>Welcome</h2>
-<p id="welcome"></p>
-<p>Your account registration/login is connected.</p>
-<p>Other banking features will be enabled after their backend is completed.</p>
+<!-- KYC FORM -->
+<div class="card hidden" id="kycCard">
+
+<h2>Complete Your KYC</h2>
+<p>Please enter your personal information accurately.</p>
+
+<form id="kycForm">
+
+<label>Select Identity Document</label>
+<select id="documentType" required>
+<option value="">Choose document</option>
+<option value="AADHAAR">Aadhaar Card</option>
+<option value="PAN">PAN Card</option>
+<option value="VOTER_ID">Voter ID</option>
+<option value="DRIVING_LICENCE">Driving Licence</option>
+</select>
+
+<label>Document Number</label>
+<input id="documentNumber" required placeholder="Enter document number">
+
+<label>Date of Birth</label>
+<input id="dob" type="date" required>
+
+<label>Full Legal Name</label>
+<input id="fullName" required placeholder="Enter full name">
+
+<label>Father's Name</label>
+<input id="fatherName" required placeholder="Enter father's name">
+
+<label>Mother's Name</label>
+<input id="motherName" required placeholder="Enter mother's name">
+
+<label>Annual Income (₹)</label>
+<input id="income" type="number" min="0" step="1" required placeholder="Annual income">
+
+<label>Occupation</label>
+<select id="occupation" required>
+<option value="">Select occupation</option>
+<option>Business</option>
+<option>Private Employee</option>
+<option>Government Employee</option>
+<option>Self Employed</option>
+<option>Student</option>
+<option>Homemaker</option>
+<option>Retired</option>
+<option>Other</option>
+</select>
+
+<div class="section">
+<h3>Residential Address</h3>
+
+<label>House / Flat Number</label>
+<input id="house" required>
+
+<label>Street / Locality</label>
+<input id="locality" required>
+
+<label>Village / City</label>
+<input id="city" required>
+
+<label>Post Office</label>
+<input id="postOffice" required>
+
+<label>Police Station</label>
+<input id="policeStation" required>
+
+<label>District</label>
+<input id="district" required>
+
+<label>State</label>
+<input id="state" required>
+
+<label>PIN Code</label>
+<input id="pinCode" type="text" maxlength="6" pattern="[0-9]{6}" required>
+</div>
+
+<p style="font-size:13px;color:#667">
+By submitting, you confirm that the information provided is accurate and consent to its processing for KYC purposes.
+</p>
+
+<button type="submit" id="kycSubmit">Submit KYC Application</button>
+
+</form>
+<p id="kycMessage"></p>
+</div>
+
+<!-- PENDING SCREEN -->
+<div class="card hidden" id="pendingCard">
+<h2>KYC Application Submitted</h2>
+<div class="status">
+Your application is awaiting admin verification.
+<br><br>
+<strong>Status: UNDER REVIEW</strong>
+</div>
+<p>Your account number and financial information remain hidden until approval.</p>
+<button onclick="logout()">Sign Out</button>
+</div>
+
+<!-- REJECTED SCREEN -->
+<div class="card hidden" id="rejectedCard">
+<h2>KYC Application Rejected</h2>
+<div class="status">
+<strong>Status: REJECTED</strong>
+<p id="rejectionReason"></p>
+</div>
+<button onclick="showKycForm()">Resubmit KYC</button>
+<button class="secondary" onclick="logout()">Sign Out</button>
+</div>
+
+<!-- VERIFIED SCREEN -->
+<div class="card hidden" id="verifiedCard">
+<div class="success">
+<div class="tick">✓</div>
+<h2>KYC VERIFIED!</h2>
+<p>Your KYC verification has been approved successfully.</p>
+</div>
+
+<div class="status">
+<strong>Your Account Details</strong>
+<p id="accountNumber">Loading account number...</p>
+<p id="balance">Loading balance...</p>
+</div>
+
+<button disabled style="opacity:.6">Add Money — Coming Soon</button>
 <button onclick="logout()">Sign Out</button>
 </div>
 
 <script>
 const SUPABASE_URL = "https://mmgvfxqqnzqokeuojadp.supabase.co";
 const SUPABASE_KEY = "sb_publishable_bm16oFdCJ4oCyR4u8EaXJA_8GK4qXc8";
+
 const db = window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const FUNCTION_URL = SUPABASE_URL + "/functions/v1/customer-register";
 
 let registering = false;
+let currentUser = null;
+
+function hideAll(){
+ ["authCard","kycCard","pendingCard","rejectedCard","verifiedCard"]
+ .forEach(id=>document.getElementById(id).classList.add("hidden"));
+}
 
 function toggleMode(){
- registering = !registering;
+ registering=!registering;
+
  document.getElementById("registerFields").classList.toggle("hidden",!registering);
- document.getElementById("heading").textContent = registering ? "Create Account" : "Member Login";
- document.getElementById("description").textContent = registering ? "Register your Society Savings account." : "Sign in using your registered mobile number.";
- document.getElementById("submitBtn").textContent = registering ? "Register Account" : "Sign In";
- document.getElementById("switchBtn").textContent = registering ? "Back to Login" : "Create Account";
- document.getElementById("message").textContent = "";
+ document.getElementById("heading").textContent=registering?"Create Account":"Member Login";
+ document.getElementById("description").textContent=registering?"Register your Society Savings account.":"Sign in using your registered mobile number.";
+ document.getElementById("submitBtn").textContent=registering?"Register Account":"Sign In";
+ document.getElementById("switchBtn").textContent=registering?"Back to Login":"Create Account";
+ document.getElementById("message").textContent="";
 }
 
 async function submitForm(){
- const msg = document.getElementById("message");
- const mobile = document.getElementById("mobile").value.trim();
- const password = document.getElementById("password").value;
- const full_name = document.getElementById("name").value.trim();
+
+ const msg=document.getElementById("message");
+ const mobile=document.getElementById("mobile").value.trim();
+ const password=document.getElementById("password").value;
+ const full_name=document.getElementById("name").value.trim();
+ const btn=document.getElementById("submitBtn");
 
  if(!/^[0-9]{10}$/.test(mobile)){
-  msg.textContent = "Enter a valid 10-digit mobile number.";
-  return;
- }
- if(password.length < 10){
-  msg.textContent = "Password must contain at least 10 characters.";
+  msg.textContent="Enter a valid 10-digit mobile number.";
   return;
  }
 
- document.getElementById("submitBtn").disabled = true;
- msg.textContent = "Please wait...";
+ if(password.length<10){
+  msg.textContent="Password must contain at least 10 characters.";
+  return;
+ }
+
+ btn.disabled=true;
+ msg.textContent="Please wait...";
 
  try{
-  const email = mobile + "@customers.societysavings.invalid";
+
+  const email=mobile+"@customers.societysavings.invalid";
 
   if(registering){
-   if(!full_name){
-    msg.textContent = "Enter your full name.";
-    return;
-   }
 
-   const response = await fetch(FUNCTION_URL,{
+   if(!full_name) throw new Error("Enter your full name.");
+
+   const response=await fetch(FUNCTION_URL,{
     method:"POST",
     headers:{"Content-Type":"application/json","apikey":SUPABASE_KEY},
     body:JSON.stringify({full_name,mobile,password})
    });
 
-   const result = await response.json();
-   if(!response.ok || !result.success){
-    throw new Error(result.error || result.message || "Registration failed.");
-   }
+   const result=await response.json();
 
-   msg.textContent = "Registration successful. You can now sign in.";
+   if(!response.ok||!result.success)
+    throw new Error(result.error||"Registration failed.");
+
+   registering=false;
    toggleMode();
-   msg.textContent = "Registration successful. Please sign in.";
+   msg.textContent="Registration successful. Please sign in.";
+
   }else{
-   const {data,error} = await db.auth.signInWithPassword({email,password});
+
+   const {data,error}=await db.auth.signInWithPassword({email,password});
+
    if(error) throw error;
-   showDashboard(data.user);
+
+   await loadCustomer(data.user);
   }
+
  }catch(error){
-  msg.textContent = error.message || "Something went wrong.";
+  msg.textContent=error.message||"Something went wrong.";
  }finally{
-  document.getElementById("submitBtn").disabled = false;
+  btn.disabled=false;
  }
 }
 
-function showDashboard(user){
- document.getElementById("authCard").classList.add("hidden");
- document.getElementById("dashboard").classList.remove("hidden");
- document.getElementById("welcome").textContent = "You are signed in.";
+async function loadCustomer(user){
+
+ currentUser=user;
+ hideAll();
+
+ const {data:kyc,error}=await db
+ .from("kyc_submissions")
+ .select("*")
+ .eq("customer_id",user.id)
+ .maybeSingle();
+
+ if(error){
+  hideAll();
+  document.getElementById("authCard").classList.remove("hidden");
+  document.getElementById("message").textContent="Unable to load KYC status: "+error.message;
+  return;
+ }
+
+ if(!kyc){
+  showKycForm();
+  return;
+ }
+
+ if(kyc.status==="APPROVED"){
+  await showVerified();
+ }else if(kyc.status==="REJECTED"){
+  document.getElementById("rejectedCard").classList.remove("hidden");
+  document.getElementById("rejectionReason").textContent=kyc.rejection_reason||"Please contact the administrator.";
+ }else{
+  document.getElementById("pendingCard").classList.remove("hidden");
+ }
+}
+
+function showKycForm(){
+
+ hideAll();
+ document.getElementById("kycCard").classList.remove("hidden");
+
+}
+
+document.getElementById("kycForm").addEventListener("submit",async function(e){
+
+ e.preventDefault();
+
+ if(!currentUser){
+  alert("Please sign in again.");
+  return;
+ }
+
+ const btn=document.getElementById("kycSubmit");
+ const msg=document.getElementById("kycMessage");
+
+ btn.disabled=true;
+ msg.textContent="Submitting application...";
+
+ try{
+
+  const application={
+   customer_id:currentUser.id,
+   document_type:document.getElementById("documentType").value,
+   document_number:document.getElementById("documentNumber").value.trim(),
+   date_of_birth:document.getElementById("dob").value,
+   full_name:document.getElementById("fullName").value.trim(),
+   father_name:document.getElementById("fatherName").value.trim(),
+   mother_name:document.getElementById("motherName").value.trim(),
+   annual_income:Number(document.getElementById("income").value),
+   occupation:document.getElementById("occupation").value,
+   house_address:document.getElementById("house").value.trim(),
+   locality:document.getElementById("locality").value.trim(),
+   city:document.getElementById("city").value.trim(),
+   post_office:document.getElementById("postOffice").value.trim(),
+   police_station:document.getElementById("policeStation").value.trim(),
+   district:document.getElementById("district").value.trim(),
+   state:document.getElementById("state").value.trim(),
+   pin_code:document.getElementById("pinCode").value,
+   status:"PENDING"
+  };
+
+  if(!application.document_number)
+   throw new Error("Enter your document number.");
+
+  const {error}=await db
+   .from("kyc_submissions")
+   .insert(application);
+
+  if(error) throw error;
+
+  hideAll();
+  document.getElementById("pendingCard").classList.remove("hidden");
+
+ }catch(error){
+  msg.textContent=error.message||"KYC submission failed.";
+ }finally{
+  btn.disabled=false;
+ }
+
+});
+
+async function showVerified(){
+
+ hideAll();
+ document.getElementById("verifiedCard").classList.remove("hidden");
+
+ const {data:account,error}=await db
+  .from("accounts")
+  .select("account_no,balance_paise,status")
+  .eq("customer_id",currentUser.id)
+  .maybeSingle();
+
+ if(error||!account){
+  document.getElementById("accountNumber").textContent="Account details are not currently accessible.";
+  document.getElementById("balance").textContent="Please contact the administrator.";
+  return;
+ }
+
+ document.getElementById("accountNumber").textContent="Account Number: "+account.account_no;
+
+ const rupees=(Number(account.balance_paise||0)/100).toLocaleString("en-IN",{
+  style:"currency",currency:"INR"
+ });
+
+ document.getElementById("balance").textContent="Available Balance: "+rupees;
+
 }
 
 async function logout(){
+
  await db.auth.signOut();
- document.getElementById("dashboard").classList.add("hidden");
+ currentUser=null;
+ hideAll();
  document.getElementById("authCard").classList.remove("hidden");
+ document.getElementById("mobile").value="";
+ document.getElementById("password").value="";
 }
 
-db.auth.getSession().then(({data})=>{
- if(data.session) showDashboard(data.session.user);
+db.auth.getSession().then(async({data})=>{
+ if(data.session){
+  await loadCustomer(data.session.user);
+ }
 });
 </script>
+
 </body>
 </html>
