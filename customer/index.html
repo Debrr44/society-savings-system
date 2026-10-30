@@ -1,206 +1,117 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#071b2c">
-<title>Society Savings | Customer Banking</title>
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-
+<title>Society Savings | Customer</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{
-  --navy:#071b2c;
-  --navy2:#102c40;
-  --green:#087d60;
-  --gold:#d6b779;
-  --cream:#f5f4ef;
-  --muted:#84919b;
-  --white:#fff;
-  --border:#e9ece9;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-body{
-  font-family:'DM Sans',sans-serif;
-  background:#f2f4f2;
-  color:var(--navy);
-}
-button,input{font:inherit}
+:root{--navy:#071b2c;--navy2:#102c40;--green:#087d60;--gold:#d6b779;--cream:#f5f4ef;--ink:#172b3a;--muted:#758492;--line:#e6e9e8}
+*{box-sizing:border-box}
+body{margin:0;background:#f2f4f2;color:var(--ink);font-family:'DM Sans',sans-serif}
+.topbar{height:72px;background:var(--navy);color:white;display:flex;align-items:center;padding:0 22px;gap:12px;font:800 16px Manrope;letter-spacing:2px}
+.logo{width:38px;height:38px;border:1px solid var(--gold);border-radius:12px;display:grid;place-items:center;color:var(--gold);font-size:20px}
+.gold{color:var(--gold)}
+.layout{max-width:1050px;margin:28px auto;padding:0 18px;display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.hero{background:radial-gradient(circle at 90% 15%,#34504b,transparent 35%),linear-gradient(145deg,#10394a,#071b2c);color:white;border-radius:25px;padding:42px 34px;min-height:520px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 18px 45px #071b2c22}
+.eyebrow{font-size:11px;letter-spacing:3px;color:var(--gold);font-weight:700}
+h1{font:800 clamp(35px,5vw,52px)/1.12 Manrope;margin:22px 0}
+.hero p{color:#c5d3d8;line-height:1.8;font-size:14px}
+.stats{display:flex;gap:22px;margin-top:35px}
+.stats b{display:block;font:700 20px Manrope}.stats span{font-size:11px;color:#c5d3d8}
+.warning{font-size:11px;color:#b8c8ce;line-height:1.7;margin-top:45px}
+.card{background:white;border:1px solid var(--line);border-radius:24px;padding:34px;align-self:center;box-shadow:0 18px 45px #071b2c12}
+h2{font:800 27px Manrope;color:var(--navy);margin:12px 0 8px}
+.sub{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:25px}
+label{display:block;font-size:12px;font-weight:700;margin:17px 0 8px;color:#405463}
+input{width:100%;height:50px;border:1px solid #dce3e2;border-radius:11px;padding:0 14px;font:14px 'DM Sans';outline:none}
+input:focus{border-color:var(--green);box-shadow:0 0 0 3px #087d6018}
 button{cursor:pointer}
-.hidden{display:none!important}
+.primary{width:100%;height:51px;border:0;border-radius:11px;background:linear-gradient(100deg,#087d60,#0b654f);color:white;font-weight:700;margin-top:23px}
+.note{font-size:11px;color:#7b8990;line-height:1.7;margin-top:18px}
+.message{display:none;padding:12px;background:#fff4e5;color:#80521c;border-radius:10px;font-size:12px;margin-top:15px}
+.dashboard{display:none;max-width:1050px;margin:30px auto;padding:0 18px}
+.dashhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.dashhead h2{margin:5px 0}
+.logout{background:white;border:1px solid var(--line);border-radius:10px;padding:10px 15px;font-weight:700}
+.demo{background:#fff4df;color:#79531e;padding:13px;border-radius:11px;font-size:12px;margin-bottom:18px}
+.balance{background:radial-gradient(circle at 90% 15%,#34504b,transparent 35%),linear-gradient(120deg,#10394a,#071b2c);color:white;border-radius:22px;padding:28px}
+.balance small{color:#c5d3d8}.amount{font:800 40px Manrope;margin:10px 0 20px}
+.meta{display:flex;gap:30px;flex-wrap:wrap;font-size:11px;color:#c5d3d8}.meta b{display:block;color:white;margin-top:6px}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:18px 0}
+.tile,.activity{background:white;border:1px solid var(--line);border-radius:15px;padding:19px}
+.tile small{color:var(--muted)}.tile b{display:block;margin-top:8px;color:var(--navy)}
+.activity h3{font:700 17px Manrope;margin-top:0}.empty{text-align:center;padding:22px;border:1px dashed #d6dfdc;border-radius:10px;color:var(--muted);font-size:13px}
+footer{text-align:center;color:#87939a;font-size:11px;padding:24px}
+@media(max-width:760px){.layout{grid-template-columns:1fr;margin:16px auto}.hero{min-height:390px;padding:30px 25px}.card{padding:26px}.tiles{grid-template-columns:1fr}.amount{font-size:34px}}
+</style>
+</head>
+<body>
+<header class="topbar"><span class="logo">✦</span><span>SOCIETY <span class="gold">SAVINGS</span></span></header>
 
-/* AUTH */
-#auth{
-  min-height:100vh;
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  background:var(--navy);
-}
-.auth-visual{
-  min-height:100vh;
-  padding:55px;
-  color:white;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-  background:
-  linear-gradient(180deg,rgba(3,20,31,.30),rgba(3,20,31,.90)),
-  url('https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=1400&q=85')
-  center/cover;
-}
-.brand{
-  font-size:23px;
-  font-weight:700;
-  letter-spacing:.5px;
-}
-.brand span{color:var(--gold)}
-.auth-heading{
-  max-width:510px;
-  font-family:'Playfair Display',serif;
-  font-size:clamp(38px,5vw,66px);
-  line-height:1.12;
-  margin-bottom:20px;
-}
-.auth-description{color:#d0d8dc;line-height:1.8}
-.auth-footer{font-size:12px;color:#c1cbd0}
-.auth-form-area{
-  background:var(--cream);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  padding:35px;
-}
-.auth-box{width:100%;max-width:420px}
-.mobile-brand{display:none}
-.eyebrow{
-  color:var(--green);
-  font-weight:700;
-  font-size:11px;
-  letter-spacing:2px;
-  margin-bottom:13px;
-}
-.auth-box h2{
-  font-family:'Playfair Display',serif;
-  font-size:35px;
-  margin-bottom:10px;
-}
-.sub{color:#78858d;font-size:14px;margin-bottom:30px}
-.switch{
-  display:flex;
-  padding:5px;
-  background:#e9ece8;
-  border-radius:12px;
-  margin-bottom:26px;
-}
-.switch button{
-  flex:1;padding:12px;border:0;border-radius:9px;
-  background:transparent;color:#617078;font-weight:600;
-}
-.switch button.active{background:white;color:var(--navy);box-shadow:0 2px 8px #0000000b}
-label{display:block;font-size:13px;font-weight:600;margin:17px 0 8px}
-input{
-  width:100%;padding:15px;border:1px solid #dfe4df;
-  border-radius:10px;background:white;outline:none;
-}
-input:focus{border-color:var(--green)}
-.primary{
-  width:100%;padding:16px;border:0;border-radius:10px;
-  background:var(--navy);color:white;font-weight:700;
-  margin-top:24px;
-}
-.auth-note{font-size:11px;color:#8a9599;line-height:1.7;margin-top:20px}
+<main class="layout" id="loginView">
+<section class="hero">
+<div>
+<div class="eyebrow">A SMARTER WAY TO SAVE</div>
+<h1>Your savings.<br>Clearly in view.</h1>
+<p>A dedicated member portal to review your account information and keep track of your society savings activity.</p>
+<div class="stats">
+<div><b>01</b><span>Member-first</span></div>
+<div><b>02</b><span>Clear records</span></div>
+<div><b>03</b><span>Simple access</span></div>
+</div>
+</div>
+<div class="warning">CUSTOMER PORTAL PREVIEW<br>This demonstration is not connected to a live financial ledger. Do not enter a real password or sensitive banking information.</div>
+</section>
 
-/* APP */
-#app{min-height:100vh}
-.topbar{
-  background:var(--navy);
-  color:white;padding:18px 5%;
-  display:flex;justify-content:space-between;align-items:center;
-}
-.topbar .brand{font-size:19px}
-.profile{
-  display:flex;align-items:center;gap:10px;font-size:13px
-}
-.avatar{
-  width:38px;height:38px;border-radius:50%;
-  background:var(--gold);color:var(--navy);
-  display:grid;place-items:center;font-weight:700
-}
-.layout{
-  max-width:1250px;margin:auto;padding:30px 22px;
-  display:grid;grid-template-columns:225px 1fr;gap:25px
-}
-.sidebar{
-  background:white;border-radius:16px;padding:18px;
-  height:max-content;box-shadow:0 5px 25px #102c4008;
-}
-.side-label{
-  font-size:10px;color:#9ba5a8;font-weight:700;
-  letter-spacing:1.5px;margin:12px 10px;
-}
-.navbtn{
-  width:100%;border:0;background:transparent;
-  padding:13px 12px;text-align:left;border-radius:9px;
-  color:#65737c;font-size:13px;margin:2px 0;
-}
-.navbtn.active,.navbtn:hover{background:#eaf4ef;color:var(--green);font-weight:700}
-.content{min-width:0}
-.welcome{
-  display:flex;justify-content:space-between;align-items:center;
-  margin-bottom:25px;gap:12px
-}
-.welcome h1{font-size:25px}
-.welcome p{font-size:13px;color:var(--muted);margin-top:5px}
-.tag{
-  background:#e6f4ed;color:var(--green);
-  border-radius:30px;padding:8px 12px;font-size:11px;font-weight:700
-}
-.balance-card{
-  position:relative;overflow:hidden;
-  background:linear-gradient(115deg,#09243a,#075e58);
-  border-radius:18px;padding:27px;color:white;
-  box-shadow:0 15px 35px #09243a25;
-}
-.balance-card:after{
-  content:"";position:absolute;width:260px;height:260px;
-  border:1px solid #ffffff20;border-radius:50%;
-  right:-80px;top:-110px;
-  box-shadow:0 0 0 30px #ffffff08,0 0 0 65px #ffffff05;
-}
-.balance-label{font-size:12px;color:#d1dedc;letter-spacing:1px}
-.balance-amount{
-  font-size:clamp(32px,5vw,44px);
-  font-weight:700;margin:14px 0 18px;position:relative;z-index:1
-}
-.balance-bottom{
-  display:flex;justify-content:space-between;gap:10px;
-  color:#d4e1df;font-size:12px;position:relative;z-index:1
-}
-.actions{
-  display:grid;grid-template-columns:repeat(4,1fr);
-  gap:13px;margin:22px 0;
-}
-.action{
-  background:white;border:1px solid var(--border);
-  border-radius:14px;padding:19px 8px;text-align:center;
-  color:var(--navy);font-size:12px;font-weight:600;
-}
-.action-icon{
-  width:43px;height:43px;border-radius:13px;
-  background:#eaf4ef;color:var(--green);
-  display:grid;place-items:center;font-size:20px;
-  margin:0 auto 10px;
-}
-.grid{
-  display:grid;grid-template-columns:1.4fr 1fr;gap:18px
-}
-.panel{
-  background:white;border:1px solid var(--border);
-  border-radius:15px;padding:21px;margin-bottom:18px;
-}
-.panel h3{font-size:16px;margin-bottom:18px}
-.row{
-  display:flex
+<section class="card">
+<div class="eyebrow" style="color:#087d60">MEMBER SIGN IN</div>
+<h2>Welcome back</h2>
+<p class="sub">Sign in to preview your customer dashboard.</p>
+<form id="loginForm">
+<label for="mobile">Mobile number</label>
+<input id="mobile" inputmode="numeric" maxlength="10" placeholder="Enter 10-digit mobile number" required>
+<label for="password">Password</label>
+<input id="password" type="password" placeholder="Enter demo password" required>
+<button class="primary" type="submit">Continue to dashboard →</button>
+</form>
+<div id="message" class="message"></div>
+<p class="note">Preview mode only. Authentication and account data are not connected to Supabase. No deposits, withdrawals or transfers can be made.</p>
+</section>
+</main>
+
+<main class="dashboard" id="dashboard">
+<div class="dashhead"><div><div class="eyebrow" style="color:#087d60">MEMBER OVERVIEW</div><h2>Your account</h2></div><button class="logout" id="logout">Sign out</button></div>
+<div class="demo"><b>DEMO PREVIEW:</b> These figures are illustrative only, not a real account balance.</div>
+<section class="balance"><small>Illustrative available balance</small><div class="amount">₹ 25,000.00</div><div class="meta"><div>ACCOUNT NUMBER<b>1512 •••••••••</b></div><div>ACCOUNT STATUS<b>Preview account</b></div></div></section>
+<section class="tiles">
+<div class="tile"><small>Member profile</small><b>Preview member</b></div>
+<div class="tile"><small>Recent activity</small><b>No live entries</b></div>
+<div class="tile"><small>Account services</small><b>Not connected</b></div>
+</section>
+<section class="activity"><h3>Recent activity</h3><div class="empty">No transactions to display. Live transaction history will appear after secure backend integration.</div></section>
+</main>
+<footer>Society Savings · Customer Portal Preview</footer>
+
+<script>
+const form=document.getElementById('loginForm');
+const message=document.getElementById('message');
+form.addEventListener('submit',function(e){
+e.preventDefault();
+const mobile=document.getElementById('mobile').value.trim();
+const password=document.getElementById('password').value;
+if(!/^[6-9]\d{9}$/.test(mobile)){message.textContent='Enter a valid 10-digit Indian mobile number.';message.style.display='block';return;}
+if(!password){message.textContent='Enter the demo password.';message.style.display='block';return;}
+document.getElementById('loginView').style.display='none';
+document.getElementById('dashboard').style.display='block';
+window.scrollTo(0,0);
+});
+document.getElementById('logout').addEventListener('click',function(){
+document.getElementById('dashboard').style.display='none';
+document.getElementById('loginView').style.display='grid';
+form.reset();message.style.display='none';window.scrollTo(0,0);
+});
+</script>
+</body>
+</html>
