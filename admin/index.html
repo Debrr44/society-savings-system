@@ -270,5 +270,39 @@ document.getElementById('adminLogin').onclick = async () => {
 
 db.auth.getSession().then(({ data }) => checkAdmin(data.session));
 </script>
+<script>
+const customerBox = document.createElement('section');
+
+customerBox.style.cssText =
+  'background:white;padding:20px;margin:20px;border-radius:12px;color:#222';
+
+customerBox.innerHTML = `
+  <h2>Customers</h2>
+  <button id="loadCustomers">Load Customers</button>
+  <div id="customerResults">Tap the button to load records.</div>
+`;
+
+document.querySelector('.main').appendChild(customerBox);
+
+document.getElementById('loadCustomers').onclick = async () => {
+  const result = document.getElementById('customerResults');
+  result.textContent = 'Loading...';
+
+  const { data, error } = await db
+    .from('customers')
+    .select('id,full_name,mobile,kyc_status');
+
+  if (error) {
+    result.textContent = error.message;
+    return;
+  }
+
+  result.innerHTML = data.length
+    ? data.map(c =>
+        `<p>${c.full_name || 'Unnamed'} — ${c.mobile || 'No mobile'} — KYC: ${c.kyc_status || 'Pending'}</p>`
+      ).join('')
+    : 'No customers registered yet.';
+};
+</script>
 </body>
 </html>
