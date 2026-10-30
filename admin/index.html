@@ -212,5 +212,63 @@ const db = window.supabase.createClient(
 
 console.log("Supabase client initialized");
 </script>
+<script>
+const main = document.querySelector('.main');
+if (main) main.style.display = 'none';
+
+const box = document.createElement('div');
+box.style.cssText = 'max-width:360px;margin:80px auto;padding:25px;background:#fff;border:1px solid #ddd;border-radius:14px;font-family:Arial';
+box.innerHTML = `
+  <h2>Admin Login</h2>
+  <p>Sign in to Society Savings</p>
+  <input id="adminEmail" type="email" placeholder="Admin email" style="width:100%;padding:12px;margin:8px 0;box-sizing:border-box">
+  <input id="adminPassword" type="password" placeholder="Password" style="width:100%;padding:12px;margin:8px 0;box-sizing:border-box">
+  <button id="adminLogin" style="width:100%;padding:12px;background:#173f35;color:white;border:0;border-radius:7px">Login</button>
+  <p id="loginMessage"></p>
+`;
+document.body.appendChild(box);
+
+async function checkAdmin(session) {
+  if (!session) return false;
+
+  const { data, error } = await db
+    .from('admin_users')
+    .select('role,is_active')
+    .eq('id', session.user.id)
+    .eq('is_active', true)
+    .maybeSingle();
+
+  if (error || !data) {
+    await db.auth.signOut();
+    return false;
+  }
+
+  box.remove();
+  if (main) main.style.display = '';
+  return true;
+}
+
+document.getElementById('adminLogin').onclick = async () => {
+  const msg = document.getElementById('loginMessage');
+  msg.textContent = 'Checking...';
+
+  const email = document.getElementById('adminEmail').value.trim();
+  const password = document.getElementById('adminPassword').value;
+
+  const { data, error } = await db.auth.signInWithPassword({
+    email, password
+  });
+
+  if (error) {
+    msg.textContent = error.message;
+    return;
+  }
+
+  const allowed = await checkAdmin(data.session);
+  if (!allowed) msg.textContent = 'Access denied. Contact administrator.';
+};
+
+db.auth.getSession().then(({ data }) => checkAdmin(data.session));
+</script>
 </body>
 </html>
