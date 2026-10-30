@@ -314,32 +314,34 @@ document.getElementById('loadCustomers').onclick = async () => {
 <script>
 async function loadKycApplications(){
  const box=document.getElementById("kycApplications");
- box.textContent="Loading...";
+ box.textContent="Loading applications...";
 
- const {data,error}=await db
- .from("kyc_submissions")
- .select("*")
- .order("created_at",{ascending:false});
+ try{
+  const {data,error}=await db
+   .from("kyc_submissions")
+   .select("*");
 
- if(error){
+  if(error) throw error;
+
+  if(!data || data.length===0){
+   box.textContent="No KYC applications found.";
+   return;
+  }
+
+  box.innerHTML=data.map(k=>`
+   <div style="background:white;padding:18px;margin:12px 0;border-radius:14px">
+    <h3>${escapeHtml(k.full_name||"Customer")}</h3>
+    <p>Document: ${escapeHtml(k.document_type||"")}</p>
+    <p>Status: ${escapeHtml(k.status||"PENDING")}</p>
+    <p>Document number: ${escapeHtml(k.document_number||"")}</p>
+    <button onclick="reviewKyc('${k.id}','APPROVED')">Approve</button>
+    <button style="background:#b42318" onclick="reviewKyc('${k.id}','REJECTED')">Reject</button>
+   </div>
+  `).join("");
+
+ }catch(error){
   box.textContent="Error: "+error.message;
-  return;
  }
-
- if(!data.length){
-  box.textContent="No KYC applications found.";
-  return;
- }
-
- box.innerHTML=data.map(k=>`
- <div style="background:#fff;padding:15px;margin:12px 0;border-radius:12px">
- <h3>${escapeHtml(k.full_name||"Customer")}</h3>
- <p>Document: ${escapeHtml(k.document_type||"")}</p>
- <p>Status: ${escapeHtml(k.status||"PENDING")}</p>
- <p>Document number: ${escapeHtml(k.document_number||"")}</p>
- <button onclick="reviewKyc('${k.id}','APPROVED')">Approve</button>
- <button style="background:#b42318" onclick="reviewKyc('${k.id}','REJECTED')">Reject</button>
- </div>`).join("");
 }
 
 function escapeHtml(value){
