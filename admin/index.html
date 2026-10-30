@@ -200,5 +200,17 @@ const query=input.value.toLowerCase();
 rows.forEach(row=>row.style.display=row.textContent.toLowerCase().includes(query)?'':'none');
 }
 </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://mmgvfxqqnzqokeuojadp.supabase.co";
+const SUPABASE_KEY = "sb_publishable_bm16oFdCJ4oCyR4u8EaXJA_8GK4qXc8";
+
+const db = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+console.log("Supabase client initialized");
+</script>
 </body>
 </html>
