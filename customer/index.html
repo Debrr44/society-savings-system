@@ -1,1 +1,206 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#071b2c">
+<title>Society Savings | Customer Banking</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --navy:#071b2c;
+  --navy2:#102c40;
+  --green:#087d60;
+  --gold:#d6b779;
+  --cream:#f5f4ef;
+  --muted:#84919b;
+  --white:#fff;
+  --border:#e9ece9;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:#f2f4f2;
+  color:var(--navy);
+}
+button,input{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+
+/* AUTH */
+#auth{
+  min-height:100vh;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  background:var(--navy);
+}
+.auth-visual{
+  min-height:100vh;
+  padding:55px;
+  color:white;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  background:
+  linear-gradient(180deg,rgba(3,20,31,.30),rgba(3,20,31,.90)),
+  url('https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=1400&q=85')
+  center/cover;
+}
+.brand{
+  font-size:23px;
+  font-weight:700;
+  letter-spacing:.5px;
+}
+.brand span{color:var(--gold)}
+.auth-heading{
+  max-width:510px;
+  font-family:'Playfair Display',serif;
+  font-size:clamp(38px,5vw,66px);
+  line-height:1.12;
+  margin-bottom:20px;
+}
+.auth-description{color:#d0d8dc;line-height:1.8}
+.auth-footer{font-size:12px;color:#c1cbd0}
+.auth-form-area{
+  background:var(--cream);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:35px;
+}
+.auth-box{width:100%;max-width:420px}
+.mobile-brand{display:none}
+.eyebrow{
+  color:var(--green);
+  font-weight:700;
+  font-size:11px;
+  letter-spacing:2px;
+  margin-bottom:13px;
+}
+.auth-box h2{
+  font-family:'Playfair Display',serif;
+  font-size:35px;
+  margin-bottom:10px;
+}
+.sub{color:#78858d;font-size:14px;margin-bottom:30px}
+.switch{
+  display:flex;
+  padding:5px;
+  background:#e9ece8;
+  border-radius:12px;
+  margin-bottom:26px;
+}
+.switch button{
+  flex:1;padding:12px;border:0;border-radius:9px;
+  background:transparent;color:#617078;font-weight:600;
+}
+.switch button.active{background:white;color:var(--navy);box-shadow:0 2px 8px #0000000b}
+label{display:block;font-size:13px;font-weight:600;margin:17px 0 8px}
+input{
+  width:100%;padding:15px;border:1px solid #dfe4df;
+  border-radius:10px;background:white;outline:none;
+}
+input:focus{border-color:var(--green)}
+.primary{
+  width:100%;padding:16px;border:0;border-radius:10px;
+  background:var(--navy);color:white;font-weight:700;
+  margin-top:24px;
+}
+.auth-note{font-size:11px;color:#8a9599;line-height:1.7;margin-top:20px}
+
+/* APP */
+#app{min-height:100vh}
+.topbar{
+  background:var(--navy);
+  color:white;padding:18px 5%;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.topbar .brand{font-size:19px}
+.profile{
+  display:flex;align-items:center;gap:10px;font-size:13px
+}
+.avatar{
+  width:38px;height:38px;border-radius:50%;
+  background:var(--gold);color:var(--navy);
+  display:grid;place-items:center;font-weight:700
+}
+.layout{
+  max-width:1250px;margin:auto;padding:30px 22px;
+  display:grid;grid-template-columns:225px 1fr;gap:25px
+}
+.sidebar{
+  background:white;border-radius:16px;padding:18px;
+  height:max-content;box-shadow:0 5px 25px #102c4008;
+}
+.side-label{
+  font-size:10px;color:#9ba5a8;font-weight:700;
+  letter-spacing:1.5px;margin:12px 10px;
+}
+.navbtn{
+  width:100%;border:0;background:transparent;
+  padding:13px 12px;text-align:left;border-radius:9px;
+  color:#65737c;font-size:13px;margin:2px 0;
+}
+.navbtn.active,.navbtn:hover{background:#eaf4ef;color:var(--green);font-weight:700}
+.content{min-width:0}
+.welcome{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:25px;gap:12px
+}
+.welcome h1{font-size:25px}
+.welcome p{font-size:13px;color:var(--muted);margin-top:5px}
+.tag{
+  background:#e6f4ed;color:var(--green);
+  border-radius:30px;padding:8px 12px;font-size:11px;font-weight:700
+}
+.balance-card{
+  position:relative;overflow:hidden;
+  background:linear-gradient(115deg,#09243a,#075e58);
+  border-radius:18px;padding:27px;color:white;
+  box-shadow:0 15px 35px #09243a25;
+}
+.balance-card:after{
+  content:"";position:absolute;width:260px;height:260px;
+  border:1px solid #ffffff20;border-radius:50%;
+  right:-80px;top:-110px;
+  box-shadow:0 0 0 30px #ffffff08,0 0 0 65px #ffffff05;
+}
+.balance-label{font-size:12px;color:#d1dedc;letter-spacing:1px}
+.balance-amount{
+  font-size:clamp(32px,5vw,44px);
+  font-weight:700;margin:14px 0 18px;position:relative;z-index:1
+}
+.balance-bottom{
+  display:flex;justify-content:space-between;gap:10px;
+  color:#d4e1df;font-size:12px;position:relative;z-index:1
+}
+.actions{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:13px;margin:22px 0;
+}
+.action{
+  background:white;border:1px solid var(--border);
+  border-radius:14px;padding:19px 8px;text-align:center;
+  color:var(--navy);font-size:12px;font-weight:600;
+}
+.action-icon{
+  width:43px;height:43px;border-radius:13px;
+  background:#eaf4ef;color:var(--green);
+  display:grid;place-items:center;font-size:20px;
+  margin:0 auto 10px;
+}
+.grid{
+  display:grid;grid-template-columns:1.4fr 1fr;gap:18px
+}
+.panel{
+  background:white;border:1px solid var(--border);
+  border-radius:15px;padding:21px;margin-bottom:18px;
+}
+.panel h3{font-size:16px;margin-bottom:18px}
+.row{
+  display:flex
