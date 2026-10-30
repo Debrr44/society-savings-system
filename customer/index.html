@@ -2,115 +2,143 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#071b2c">
-<title>Society Savings | Customer</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Society Savings</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{--navy:#071b2c;--navy2:#102c40;--green:#087d60;--gold:#d6b779;--cream:#f5f4ef;--ink:#172b3a;--muted:#758492;--line:#e6e9e8}
 *{box-sizing:border-box}
-body{margin:0;background:#f2f4f2;color:var(--ink);font-family:'DM Sans',sans-serif}
-.topbar{height:72px;background:var(--navy);color:white;display:flex;align-items:center;padding:0 22px;gap:12px;font:800 16px Manrope;letter-spacing:2px}
-.logo{width:38px;height:38px;border:1px solid var(--gold);border-radius:12px;display:grid;place-items:center;color:var(--gold);font-size:20px}
-.gold{color:var(--gold)}
-.layout{max-width:1050px;margin:28px auto;padding:0 18px;display:grid;grid-template-columns:1fr 1fr;gap:22px}
-.hero{background:radial-gradient(circle at 90% 15%,#34504b,transparent 35%),linear-gradient(145deg,#10394a,#071b2c);color:white;border-radius:25px;padding:42px 34px;min-height:520px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 18px 45px #071b2c22}
-.eyebrow{font-size:11px;letter-spacing:3px;color:var(--gold);font-weight:700}
-h1{font:800 clamp(35px,5vw,52px)/1.12 Manrope;margin:22px 0}
-.hero p{color:#c5d3d8;line-height:1.8;font-size:14px}
-.stats{display:flex;gap:22px;margin-top:35px}
-.stats b{display:block;font:700 20px Manrope}.stats span{font-size:11px;color:#c5d3d8}
-.warning{font-size:11px;color:#b8c8ce;line-height:1.7;margin-top:45px}
-.card{background:white;border:1px solid var(--line);border-radius:24px;padding:34px;align-self:center;box-shadow:0 18px 45px #071b2c12}
-h2{font:800 27px Manrope;color:var(--navy);margin:12px 0 8px}
-.sub{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:25px}
-label{display:block;font-size:12px;font-weight:700;margin:17px 0 8px;color:#405463}
-input{width:100%;height:50px;border:1px solid #dce3e2;border-radius:11px;padding:0 14px;font:14px 'DM Sans';outline:none}
-input:focus{border-color:var(--green);box-shadow:0 0 0 3px #087d6018}
-button{cursor:pointer}
-.primary{width:100%;height:51px;border:0;border-radius:11px;background:linear-gradient(100deg,#087d60,#0b654f);color:white;font-weight:700;margin-top:23px}
-.note{font-size:11px;color:#7b8990;line-height:1.7;margin-top:18px}
-.message{display:none;padding:12px;background:#fff4e5;color:#80521c;border-radius:10px;font-size:12px;margin-top:15px}
-.dashboard{display:none;max-width:1050px;margin:30px auto;padding:0 18px}
-.dashhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
-.dashhead h2{margin:5px 0}
-.logout{background:white;border:1px solid var(--line);border-radius:10px;padding:10px 15px;font-weight:700}
-.demo{background:#fff4df;color:#79531e;padding:13px;border-radius:11px;font-size:12px;margin-bottom:18px}
-.balance{background:radial-gradient(circle at 90% 15%,#34504b,transparent 35%),linear-gradient(120deg,#10394a,#071b2c);color:white;border-radius:22px;padding:28px}
-.balance small{color:#c5d3d8}.amount{font:800 40px Manrope;margin:10px 0 20px}
-.meta{display:flex;gap:30px;flex-wrap:wrap;font-size:11px;color:#c5d3d8}.meta b{display:block;color:white;margin-top:6px}
-.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:18px 0}
-.tile,.activity{background:white;border:1px solid var(--line);border-radius:15px;padding:19px}
-.tile small{color:var(--muted)}.tile b{display:block;margin-top:8px;color:var(--navy)}
-.activity h3{font:700 17px Manrope;margin-top:0}.empty{text-align:center;padding:22px;border:1px dashed #d6dfdc;border-radius:10px;color:var(--muted);font-size:13px}
-footer{text-align:center;color:#87939a;font-size:11px;padding:24px}
-@media(max-width:760px){.layout{grid-template-columns:1fr;margin:16px auto}.hero{min-height:390px;padding:30px 25px}.card{padding:26px}.tiles{grid-template-columns:1fr}.amount{font-size:34px}}
+body{margin:0;background:#f1f5f4;font-family:Arial,sans-serif;color:#172b35}
+header{background:#063044;color:white;padding:28px 22px;border-radius:0 0 25px 25px}
+header h1{margin:0 0 8px}
+header p{margin:0;color:#c7d8df}
+.card{background:white;margin:25px 16px;padding:25px;border-radius:20px;box-shadow:0 5px 25px #0000000b}
+h2{margin-top:0}
+input{width:100%;padding:16px;margin:9px 0 17px;border:1px solid #d9e1e2;border-radius:12px;font-size:16px}
+button{width:100%;padding:16px;background:#087c65;color:white;border:0;border-radius:12px;font-size:16px;font-weight:bold;margin:7px 0}
+.secondary{background:#e5f2ee;color:#087c65}
+#message{margin-top:15px;line-height:1.5}
+.hidden{display:none}
 </style>
 </head>
 <body>
-<header class="topbar"><span class="logo">✦</span><span>SOCIETY <span class="gold">SAVINGS</span></span></header>
+<header>
+<h1>Society Savings</h1>
+<p>Your society account portal</p>
+</header>
 
-<main class="layout" id="loginView">
-<section class="hero">
-<div>
-<div class="eyebrow">A SMARTER WAY TO SAVE</div>
-<h1>Your savings.<br>Clearly in view.</h1>
-<p>A dedicated member portal to review your account information and keep track of your society savings activity.</p>
-<div class="stats">
-<div><b>01</b><span>Member-first</span></div>
-<div><b>02</b><span>Clear records</span></div>
-<div><b>03</b><span>Simple access</span></div>
+<div class="card" id="authCard">
+<h2 id="heading">Member Login</h2>
+<p id="description">Sign in using your registered mobile number.</p>
+
+<div id="registerFields" class="hidden">
+<label>Full name</label>
+<input id="name" type="text" placeholder="Enter full name">
 </div>
+
+<label>Mobile number</label>
+<input id="mobile" type="tel" maxlength="10" placeholder="10-digit mobile number">
+
+<label>Password</label>
+<input id="password" type="password" placeholder="Password">
+
+<button id="submitBtn" onclick="submitForm()">Sign In</button>
+<button class="secondary" id="switchBtn" onclick="toggleMode()">Create Account</button>
+<p id="message"></p>
 </div>
-<div class="warning">CUSTOMER PORTAL PREVIEW<br>This demonstration is not connected to a live financial ledger. Do not enter a real password or sensitive banking information.</div>
-</section>
 
-<section class="card">
-<div class="eyebrow" style="color:#087d60">MEMBER SIGN IN</div>
-<h2>Welcome back</h2>
-<p class="sub">Sign in to preview your customer dashboard.</p>
-<form id="loginForm">
-<label for="mobile">Mobile number</label>
-<input id="mobile" inputmode="numeric" maxlength="10" placeholder="Enter 10-digit mobile number" required>
-<label for="password">Password</label>
-<input id="password" type="password" placeholder="Enter demo password" required>
-<button class="primary" type="submit">Continue to dashboard →</button>
-</form>
-<div id="message" class="message"></div>
-<p class="note">Preview mode only. Authentication and account data are not connected to Supabase. No deposits, withdrawals or transfers can be made.</p>
-</section>
-</main>
-
-<main class="dashboard" id="dashboard">
-<div class="dashhead"><div><div class="eyebrow" style="color:#087d60">MEMBER OVERVIEW</div><h2>Your account</h2></div><button class="logout" id="logout">Sign out</button></div>
-<div class="demo"><b>DEMO PREVIEW:</b> These figures are illustrative only, not a real account balance.</div>
-<section class="balance"><small>Illustrative available balance</small><div class="amount">₹ 25,000.00</div><div class="meta"><div>ACCOUNT NUMBER<b>1512 •••••••••</b></div><div>ACCOUNT STATUS<b>Preview account</b></div></div></section>
-<section class="tiles">
-<div class="tile"><small>Member profile</small><b>Preview member</b></div>
-<div class="tile"><small>Recent activity</small><b>No live entries</b></div>
-<div class="tile"><small>Account services</small><b>Not connected</b></div>
-</section>
-<section class="activity"><h3>Recent activity</h3><div class="empty">No transactions to display. Live transaction history will appear after secure backend integration.</div></section>
-</main>
-<footer>Society Savings · Customer Portal Preview</footer>
+<div class="card hidden" id="dashboard">
+<h2>Welcome</h2>
+<p id="welcome"></p>
+<p>Your account registration/login is connected.</p>
+<p>Other banking features will be enabled after their backend is completed.</p>
+<button onclick="logout()">Sign Out</button>
+</div>
 
 <script>
-const form=document.getElementById('loginForm');
-const message=document.getElementById('message');
-form.addEventListener('submit',function(e){
-e.preventDefault();
-const mobile=document.getElementById('mobile').value.trim();
-const password=document.getElementById('password').value;
-if(!/^[6-9]\d{9}$/.test(mobile)){message.textContent='Enter a valid 10-digit Indian mobile number.';message.style.display='block';return;}
-if(!password){message.textContent='Enter the demo password.';message.style.display='block';return;}
-document.getElementById('loginView').style.display='none';
-document.getElementById('dashboard').style.display='block';
-window.scrollTo(0,0);
-});
-document.getElementById('logout').addEventListener('click',function(){
-document.getElementById('dashboard').style.display='none';
-document.getElementById('loginView').style.display='grid';
-form.reset();message.style.display='none';window.scrollTo(0,0);
+const SUPABASE_URL = "https://mmgvfxqqnzqokeuojadp.supabase.co";
+const SUPABASE_KEY = "sb_publishable_bm16oFdCJ4oCyR4u8EaXJA_8GK4qXc8";
+const db = window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const FUNCTION_URL = SUPABASE_URL + "/functions/v1/customer-register";
+
+let registering = false;
+
+function toggleMode(){
+ registering = !registering;
+ document.getElementById("registerFields").classList.toggle("hidden",!registering);
+ document.getElementById("heading").textContent = registering ? "Create Account" : "Member Login";
+ document.getElementById("description").textContent = registering ? "Register your Society Savings account." : "Sign in using your registered mobile number.";
+ document.getElementById("submitBtn").textContent = registering ? "Register Account" : "Sign In";
+ document.getElementById("switchBtn").textContent = registering ? "Back to Login" : "Create Account";
+ document.getElementById("message").textContent = "";
+}
+
+async function submitForm(){
+ const msg = document.getElementById("message");
+ const mobile = document.getElementById("mobile").value.trim();
+ const password = document.getElementById("password").value;
+ const full_name = document.getElementById("name").value.trim();
+
+ if(!/^[0-9]{10}$/.test(mobile)){
+  msg.textContent = "Enter a valid 10-digit mobile number.";
+  return;
+ }
+ if(password.length < 10){
+  msg.textContent = "Password must contain at least 10 characters.";
+  return;
+ }
+
+ document.getElementById("submitBtn").disabled = true;
+ msg.textContent = "Please wait...";
+
+ try{
+  const email = mobile + "@customers.societysavings.invalid";
+
+  if(registering){
+   if(!full_name){
+    msg.textContent = "Enter your full name.";
+    return;
+   }
+
+   const response = await fetch(FUNCTION_URL,{
+    method:"POST",
+    headers:{"Content-Type":"application/json","apikey":SUPABASE_KEY},
+    body:JSON.stringify({full_name,mobile,password})
+   });
+
+   const result = await response.json();
+   if(!response.ok || !result.success){
+    throw new Error(result.error || result.message || "Registration failed.");
+   }
+
+   msg.textContent = "Registration successful. You can now sign in.";
+   toggleMode();
+   msg.textContent = "Registration successful. Please sign in.";
+  }else{
+   const {data,error} = await db.auth.signInWithPassword({email,password});
+   if(error) throw error;
+   showDashboard(data.user);
+  }
+ }catch(error){
+  msg.textContent = error.message || "Something went wrong.";
+ }finally{
+  document.getElementById("submitBtn").disabled = false;
+ }
+}
+
+function showDashboard(user){
+ document.getElementById("authCard").classList.add("hidden");
+ document.getElementById("dashboard").classList.remove("hidden");
+ document.getElementById("welcome").textContent = "You are signed in.";
+}
+
+async function logout(){
+ await db.auth.signOut();
+ document.getElementById("dashboard").classList.add("hidden");
+ document.getElementById("authCard").classList.remove("hidden");
+}
+
+db.auth.getSession().then(({data})=>{
+ if(data.session) showDashboard(data.session.user);
 });
 </script>
 </body>
