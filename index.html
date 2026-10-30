@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Society Savings</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #f3f6fa;
+    color: #17243a;
+}
+
+header {
+    background: #102b50;
+    color: white;
+    padding: 25px 20px;
+    text-align: center;
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+header p {
+    margin-top: 8px;
+    color: #cbd8e8;
+}
+
+.container {
+    max-width: 420px;
+    margin: 45px auto;
+    padding: 25px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 5px 25px #00000010;
+}
+
+.tabs {
+    display: flex;
+    margin-bottom: 25px;
+    gap: 10px;
+}
+
+.tabs button {
+    flex: 1;
+    padding: 13px;
+    border: none;
+    border-radius: 8px;
+    background: #edf1f7;
+    font-weight: bold;
+}
+
+.tabs button.active {
+    background: #102b50;
+    color: white;
+}
+
+h2 {
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    color: #778397;
+    font-size: 14px;
+    margin-bottom: 25px;
+}
+
+label {
+    display: block;
+    margin: 15px 0 7px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+input {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #dce2eb;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.submit {
+    width: 100%;
+    padding: 15px;
+    margin-top: 25px;
+    border: none;
+    border-radius: 8px;
+    background: #102b50;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.notice {
+    background: #fff6df;
+    color: #805b00;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    margin-top: 20px;
+}
+
+footer {
+    text-align: center;
+    color: #8792a2;
+    font-size: 12px;
+    margin-top: 30px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">SOCIETY SAVINGS</div>
+    <p>Your Society. Your Savings.</p>
+</header>
+
+<div class="container">
+
+    <div class="tabs">
+        <button id="loginTab" class="active"
+        onclick="showForm('login')">Login</button>
+
+        <button id="registerTab"
+        onclick="showForm('register')">Register</button>
+    </div>
+
+    <h2 id="heading">Welcome Back!</h2>
+
+    <p class="subtitle" id="subtitle">
+        Login to access your savings account.
+    </p>
+
+    <form onsubmit="demoSubmit(event)">
+
+        <div id="nameField" style="display:none">
+            <label>Full Name</label>
+            <input type="text" id="name"
+            placeholder="Enter your full name">
+        </div>
+
+        <label>Mobile Number</label>
+        <input type="tel" id="mobile"
+        placeholder="Enter mobile number"
+        pattern="[0-9]{10}" maxlength="10"
+        required>
+
+        <label>Password</label>
+        <input type="password" id="password"
+        placeholder="Enter password"
+        minlength="8" required>
+
+        <div id="confirmField" style="display:none">
+            <label>Confirm Password</label>
+            <input type="password" id="confirm"
+            placeholder="Confirm password">
+        </div>
+
+        <button class="submit" id="submitButton">
+            Login
+        </button>
+
+    </form>
+
+    <div class="notice">
+        DEMO VERSION: Authentication is not connected yet.
+        Do not enter real passwords or financial information.
+    </div>
+
+    <footer>
+        © 2026 Society Savings Management System
+    </footer>
+
+</div>
+
+<script>
+let currentMode = "login";
+
+function showForm(mode) {
+    currentMode = mode;
+
+    const register = mode === "register";
+
+    document.getElementById("nameField").style.display =
+        register ? "block" : "none";
+
+    document.getElementById("confirmField").style.display =
+        register ? "block" : "none";
+
+    document.getElementById("name").required = register;
+    document.getElementById("confirm").required = register;
+
+    document.getElementById("heading").textContent =
+        register ? "Create Account" : "Welcome Back!";
+
+    document.getElementById("subtitle").textContent =
+        register ? "Join your society today." :
+        "Login to access your savings account.";
+
+    document.getElementById("submitButton").textContent =
+        register ? "Create Account" : "Login";
+
+    document.getElementById("loginTab").className =
+        register ? "" : "active";
+
+    document.getElementById("registerTab").className =
+        register ? "active" : "";
+}
+
+function demoSubmit(event) {
+    event.preventDefault();
+
+    if (currentMode === "register") {
+        if (document.getElementById("password").value !==
+            document.getElementById("confirm").value) {
+            alert("Passwords do not match.");
+            return;
+        }
+    }
+
+    alert("Demo interface only. Backend authentication is not connected yet.");
+}
+</script>
+
+</body>
+  </html>
