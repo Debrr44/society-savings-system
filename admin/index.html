@@ -355,4 +355,22 @@ async function reviewKyc(id,status){
 }
 
 </script>
+  <script>
+async function reviewKyc(id,status){
+ if(!confirm("Are you sure you want to "+status+" this application?"))return;
+
+ const {error}=await db
+  .from("kyc_submissions")
+  .update({status:status})
+  .eq("id",id);
+
+ if(error){
+  alert("Update failed: "+error.message);
+  return;
+ }
+
+ alert("KYC "+status+" successfully!");
+ loadKycApplications();
+}
+  </script>
 </html>
