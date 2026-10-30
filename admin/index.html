@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#091b2c">
+<title>Society Savings | Admin Control Centre</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#091b2c;--navy2:#102c40;--green:#087d60;--gold:#d6b779;--bg:#f3f5f7;--white:#fff;--muted:#83909c;--line:#e8ecef;--red:#c64c4c;--shadow:0 8px 30px #102c4010}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:'DM Sans',sans-serif;color:#263746}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.sidebar{position:fixed;inset:0 auto 0 0;width:250px;background:var(--navy);color:white;padding:25px 16px;overflow:auto;z-index:5}
+.brand{display:flex;align-items:center;gap:11px;padding:4px 8px 28px;font:800 15px Manrope;letter-spacing:1px}
+.mark{height:38px;width:38px;border:1px solid var(--gold);border-radius:11px;display:grid;place-items:center;color:var(--gold);font-size:20px}
+.brand span:last-child{color:var(--gold)}
+.group{font-size:10px;letter-spacing:2px;color:#78909e;padding:17px 12px 9px;font-weight:700}
+.nav{display:flex;align-items:center;gap:12px;width:100%;padding:12px;border:0;border-radius:9px;background:transparent;color:#bdcbd2;text-align:left;font-size:13px;margin:3px 0}
+.nav.active,.nav:hover{background:#17384b;color:white}
+.nav.active{border-left:3px solid var(--gold)}
+.nav i{font-style:normal;width:19px;font-size:16px;text-align:center}
+.sidebottom{border-top:1px solid #ffffff18;margin-top:25px;padding:18px 10px;color:#9aabb5;font-size:11px;line-height:1.8}
+.main{margin-left:250px;min-height:100vh}
+.topbar{height:72px;background:white;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 30px;position:sticky;top:0;z-index:3}
+.topbar h2{font:700 16px Manrope;margin:0;color:var(--navy)}
+.adminuser{font-size:12px;color:#596b77;display:flex;align-items:center;gap:10px}
+.avatar{height:35px;width:35px;border-radius:50%;background:#e1f1eb;color:var(--green);display:grid;place-items:center;font-weight:800}
+.content{padding:28px;max-width:1400px;margin:auto}
+.page{display:none}.page.active{display:block}
+.heading{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:22px;flex-wrap:wrap}
+.heading h1{font:800 25px Manrope;color:var(--navy);margin:0}
+.heading p{font-size:12px;color:var(--muted);margin:6px 0 0}
+.badge{background:#fff4dc;color:#88651f;padding:7px 11px;border-radius:20px;font-size:10px;font-weight:700}
+.banner{background:#fff4df;border:1px solid #f0dfbd;color:#76551d;padding:13px 16px;border-radius:10px;font-size:12px;line-height:1.6;margin-bottom:20px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-bottom:20px}
+.stat,.panel{background:white;border:1px solid var(--line);border-radius:13px;padding:19px;box-shadow:var(--shadow)}
+.stat small{font-size:11px;color:var(--muted)}
+.stat strong{display:block;font:800 25px Manrope;color:var(--navy);margin:10px 0 5px}
+.stat span{font-size:10px;color:var(--green)}
+.grid{display:grid;grid-template-columns:1.4fr 1fr;gap:16px}
+.panel h3{font:700 15px Manrope;color:var(--navy);margin:0 0 17px}
+.tablewrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;white-space:nowrap;font-size:12px}
+th{text-align:left;color:#84919b;font-size:10px;text-transform:uppercase;letter-spacing:.7px;padding:12px 10px;border-bottom:1px solid var(--line)}
+td{padding:14px 10px;border-bottom:1px solid #f0f2f3}
+.status{padding:5px 9px;border-radius:20px;font-size:10px;font-weight:700;background:#e4f5ed;color:#087d60}
+.status.pending{background:#fff2d9;color:#9b711f}
+.status.blocked{background:#fde8e8;color:#b33e3e}
+.action{border:1px solid var(--line);background:white;color:var(--navy);padding:8px 11px;border-radius:8px;font-size:11px;font-weight:600}
+.primary{background:var(--green);color:white;border:0;padding:10px 15px;border-radius:8px;font-size:12px;font-weight:700}
+.danger{background:#fff0f0;color:#b33e3e;border:1px solid #f4d4d4}
+.search{width:100%;max-width:350px;height:40px;border:1px solid var(--line);border-radius:8px;padding:0 12px;outline:none}
+.tools{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.formgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}
+.field label{display:block;font-size:11px;font-weight:700;margin-bottom:7px}
+.field input,.field select{width:100%;height:42px;border:1px solid var(--line);border-radius:8px;padding:0 11px;background:white}
+.checkrow{display:flex;align-items:center;gap:10px;padding:13px 0;border-bottom:1px solid var(--line);font-size:12px}
+.checkrow input{accent-color:var(--green)}
+.empty{padding:28px;text-align:center;border:1px dashed #d9e0e3;border-radius:10px;color:var(--muted);font-size:12px}
+.mobilemenu{display:none;background:none;border:0;font-size:22px}
+@media(max-width:900px){.sidebar{width:220px}.main{margin-left:220px}.stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}}
+@media(max-width:650px){.sidebar{display:none;width:250px}.sidebar.open{display:block}.main{margin-left:0}.mobilemenu{display:block}.topbar{padding:0 15px}.content{padding:18px 13px}.stats{gap:9px}.stat{padding:13px}.stat strong{font-size:21px}.formgrid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<aside class="sidebar" id="sidebar">
+<div class="brand"><div class="mark">✦</div><div>SOCIETY<br><span>SAVINGS</span></div></div>
+
+<div class="group">OVERVIEW</div>
+<button class="nav active" data-page="dashboard"><i>▦</i> Dashboard</button>
+
+<div class="group">CUSTOMER OPERATIONS</div>
+<button class="nav" data-page="customers"><i>♙</i> Customers</button>
+<button class="nav" data-page="accounts"><i>▣</i> Account Management</button>
+<button class="nav" data-page="kyc"><i>✓</i> KYC Verification</button>
+<button class="nav" data-page="kycconfig"><i>⚙</i> KYC Configuration</button>
+
+<div class="group">FINANCIAL OPERATIONS</div>
+<button class="nav" data-page="transfers"><i>⇄</i> Money Transfers</button>
+<button class="nav" data-page="transactions"><i>▤</i> Transactions</button>
+<button class="nav" data-page="lien"><i>◈</i> Lien Management</button>
+
+<div class="group">ADMINISTRATION</div>
+<button class="nav" data-page="staff"><i>♧</i> Staff & Permissions</button>
+<button class="nav" data-page="audit"><i>◷</i> Audit Logs</button>
+<button class="nav" data-page="reports"><i>▥</i> Reports</button>
+<button class="nav" data-page="settings"><i>⚙</i> System Settings</button>
+
+<div class="sidebottom">ADMIN CONTROL CENTRE<br>Society Savings Management<br>Version 1.0 · Preview</div>
+</aside>
+
+<div class="main">
+<header class="topbar">
+<div style="display:flex;align-items:center;gap:12px"><button class="mobilemenu" id="menu">☰</button><h2 id="topTitle">Dashboard</h2></div>
+<div class="adminuser"><span>Administrator</span><div class="avatar">SA</div></div>
+</header>
+
+<div class="content">
+<div class="banner"><b>PREVIEW MODE:</b> This is an interface prototype. No live customer records, financial balances, permissions or transactions are connected. Do not use it to perform real financial operations.</div>
+
+<section class="page active" id="dashboard">
+<div class="heading"><div><h1>Good day, Administrator</h1><p>Society Savings · Management overview</p></div><span class="badge">● SYSTEM PREVIEW</span></div>
+<div class="stats">
+<div class="stat"><small>Total Customers</small><strong>—</strong><span>Awaiting database connection</span></div>
+<div class="stat"><small>Total Deposits</small><strong>₹ —</strong><span>Live data not connected</span></div>
+<div class="stat"><small>Pending KYC</small><strong>—</strong><span>Awaiting submissions</span></div>
+<div class="stat"><small>Pending Transfers</small><strong>—</strong><span>Awaiting ledger integration</span></div>
+</div>
+<div class="grid">
+<div class="panel"><h3>Recent Customer Activity</h3><div class="empty">Customer activity will appear here after backend integration.</div></div>
+<div class="panel"><h3>System Overview</h3><div class="checkrow">Customer portal <span class="status">Created</span></div><div class="checkrow">Admin interface <span class="status">Preview</span></div><div class="checkrow">Supabase connection <span class="status pending">Not connected</span></div><div class="checkrow">Financial ledger <span class="status pending">Not connected</span></div></div>
+</div>
+</section>
+
+<section class="page" id="customers">
+<div class="heading"><div><h1>Customer Management</h1><p>Customer profiles and account lookup</p></div><button class="primary" onclick="alert('Customer creation will be enabled after secure backend integration.')">+ Add Customer</button></div>
+<div class="panel"><div class="tools"><input class="search" placeholder="Search by name, mobile or account number" oninput="filterRows(this,'customerTable')"></div><div class="tablewrap"><table id="customerTable"><thead><tr><th>Customer</th><th>Mobile</th><th>Account</th><th>KYC</th><th>Status</th></tr></thead><tbody><tr><td colspan="5">No live customer records connected.</td></tr></tbody></table></div></div>
+</section>
+
+<section class="page" id="accounts">
+<div class="heading"><div><h1>Account Management</h1><p>Account status and restriction controls</p></div></div>
+<div class="panel"><h3>Account lookup</h3><div class="tools"><input class="search" placeholder="Enter account number or mobile"></div><div class="formgrid"><div class="field"><label>Account action</label><select><option>Select action</option><option>Block account</option><option>Unblock account</option><option>Freeze debit</option><option>Unfreeze debit</option><option>Request account closure</option></select></div><div class="field"><label>Reason / case reference</label><input placeholder="Mandatory reason"></div></div><p class="note">Actions will require server-side permission checks and audit logging before activation.</p></div>
+</section>
+
+<section class="page" id="kyc">
+<div class="heading"><div><h1>KYC Verification</h1><p>Review customer identity submissions</p></div></div>
+<div class="panel"><div class="tools"><input class="search" placeholder="Search KYC submission"></div><div class="empty">No KYC submissions yet. Customer document review will appear here after private storage and backend integration.</div></div>
+</section>
+
+<section class="page" id="kycconfig">
+<div class="heading"><div><h1>KYC Configuration</h1><p>Configure which documents customers must submit</p></div></div>
+<div class="panel"><h3>Document requirements</h3>
+<div class="checkrow"><input type="checkbox" checked disabled> Identity proof <span class="badge">Example</span></div>
+<div class="checkrow"><input type="checkbox" checked disabled> Address proof <span class="badge">Example</span></div>
+<div class="checkrow"><input type="checkbox" checked disabled> Customer photograph <span class="badge">Example</span></div>
+<div class="checkrow"><input type="checkbox" disabled> PAN document <span class="badge">Optional example</span></div>
+<p style="font-size:11px;color:var(--muted)">These are illustrative settings only. Dynamic document configuration and customer upload requirements are not active yet.</p>
+<div class="formgrid"><div class="field"><label>New document name</label><input placeholder="e.g. Address proof"></div><div class="field"><label>Document category</label><select><option>Identity</option><option>Address</option><option>Photograph</option><option>Other</option></select></div></div><br><button class="primary" onclick="alert('Configuration saving will be enabled after backend integration.')">Save configuration (preview)</button>
+</div>
+</section>
+
+<section class="page" id="transfers">
+<div class="heading"><div><h1>Money Transfers</h1><p>Internal account-to-account transfer monitoring</p></div></div>
+<div class="panel"><div class="banner">Transfers are not enabled. The eventual system will validate both accounts, account status, available balance, transfer limits and transaction PIN before posting an atomic ledger transaction.</div><div class="empty">No transfer records available.</div></div>
+</section>
+
+<section class="page" id="transactions">
+<div class="heading"><div><h1>Transaction Management</h1><p>Search internal ledger activity and references</p></div></div>
+<div class="panel"><div class="tools"><input class="search" placeholder="Search transaction ID or account number"></div><div class="empty">No transaction records connected.</div></div>
+</section>
+
+<section class="page" id="lien">
+<div class="heading"><div><h1>Lien Management</h1><p>Review and manage account lien requests</p></div></div>
+<div class="panel"><h3>New lien request</h3><div class="formgrid"><div class="field"><label>Account number</label><input placeholder="Enter account number"></div><div class="field"><label>Amount (₹)</label><input type="number" placeholder="Enter amount"></div><div class="field"><label>Case reference</label><input placeholder="Reference number"></div><div class="field"><label>Reason</label><input placeholder="Explain the reason"></div></div><br><button class="primary" onclick="alert('Lien controls require backend authorization and approval.')">Submit for authorized review</button></div>
+</section>
+
+<section class="page" id="staff">
+<div class="heading"><div><h1>Staff & Permissions</h1><p>Role-based access management</p></div><button class="primary" onclick="alert('Staff invitations require secure authentication integration.')">+ Add Staff</button></div>
+<div class="panel"><h3>Available role templates</h3><div class="checkrow">Super Admin <span class="badge">Full permissions</span></div><div class="checkrow">Manager <span class="badge">Customer and account operations</span></div><div class="checkrow">Accountant <span class="badge">Financial records</span></div><div class="checkrow">KYC Officer <span class="badge">Document verification</span></div><div class="checkrow">Read-only Auditor <span class="badge">View only</span></div><p style="font-size:11px;color:var(--muted)">Role templates are examples. Actual permissions must be enforced by the backend.</p></div>
+</section>
+
+<section class="page" id="audit">
+<div class="heading"><div><h1>Audit Logs</h1><p>Administrative action history and accountability</p></div></div>
+<div class="panel"><div class="empty">No audit events yet. Every sensitive action must record the operator, timestamp, reason and affected record.</div></div>
+</section>
+
+<section class="page" id="reports">
+<div class="heading"><div><h1>Reports & Statements</h1><p>Operational and financial reporting</p></div></div>
+<div class="stats"><div class="stat"><small>Customer report</small><strong>—</strong><span>Not connected</span></div><div class="stat"><small>Ledger report</small><strong>—</strong><span>Not connected</span></div></div>
+<div class="panel"><div class="empty">Reports will be generated from verified backend records.</div></div>
+</section>
+
+<section class="page" id="settings">
+<div class="heading"><div><h1>System Settings</h1><p>Institution configuration and operating controls</p></div></div>
+<div class="panel"><h3>Institution details</h3><div class="formgrid"><div class="field"><label>Institution name</label><input value="Society Savings" readonly></div><div class="field"><label>Currency</label><input value="INR (₹)" readonly></div><div class="field"><label>Account prefix</label><input value="1512" readonly></div><div class="field"><label>Institution identifier</label><input value="FINANCLE00001" readonly></div></div><p style="font-size:11px;color:var(--muted)">Displayed identifiers are configuration examples. The institution identifier is not represented as a bank-issued IFSC.</p></div>
+</section>
+</div>
+</div>
+
+<script>
+const navButtons=document.querySelectorAll('.nav');
+navButtons.forEach(button=>{
+button.addEventListener('click',()=>{
+navButtons.forEach(b=>b.classList.remove('active'));
+button.classList.add('active');
+document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+document.getElementById(button.dataset.page).classList.add('active');
+document.getElementById('topTitle').textContent=button.textContent.trim();
+document.getElementById('sidebar').classList.remove('open');
+window.scrollTo(0,0);
+});
+});
+document.getElementById('menu').addEventListener('click',()=>document.getElementById('sidebar').classList.toggle('open'));
+function filterRows(input,id){
+const rows=document.querySelectorAll('#'+id+' tbody tr');
+const query=input.value.toLowerCase();
+rows.forEach(row=>row.style.display=row.textContent.toLowerCase().includes(query)?'':'none');
+}
+</script>
+</body>
+</html>
