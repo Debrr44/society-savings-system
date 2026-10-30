@@ -348,13 +348,7 @@ function escapeHtml(value){
  })[c]);
 }
 
-async function reviewKyc(id,status){
- if(!confirm("Confirm "+status+"?"))return;
 
- alert("Approval actions are not connected yet. We must configure secure admin permissions before enabling them.");
-}
-
-</script>
   <script>
 async function reviewKyc(id,status){
  if(!confirm("Are you sure you want to "+status+" this application?"))return;
