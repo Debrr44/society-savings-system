@@ -2,236 +2,243 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Society Savings</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Society Savings | Financial Management</title>
 <style>
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-}
-
-body {
-    background: #f3f6fa;
-    color: #17243a;
-}
-
-header {
-    background: #102b50;
-    color: white;
-    padding: 25px 20px;
-    text-align: center;
-}
-
-.logo {
-    font-size: 28px;
-    font-weight: bold;
-}
-
-header p {
-    margin-top: 8px;
-    color: #cbd8e8;
-}
-
-.container {
-    max-width: 420px;
-    margin: 45px auto;
-    padding: 25px;
-    background: white;
-    border-radius: 16px;
-    box-shadow: 0 5px 25px #00000010;
-}
-
-.tabs {
-    display: flex;
-    margin-bottom: 25px;
-    gap: 10px;
-}
-
-.tabs button {
-    flex: 1;
-    padding: 13px;
-    border: none;
-    border-radius: 8px;
-    background: #edf1f7;
-    font-weight: bold;
-}
-
-.tabs button.active {
-    background: #102b50;
-    color: white;
-}
-
-h2 {
-    margin-bottom: 10px;
-}
-
-.subtitle {
-    color: #778397;
-    font-size: 14px;
-    margin-bottom: 25px;
-}
-
-label {
-    display: block;
-    margin: 15px 0 7px;
-    font-size: 14px;
-    font-weight: bold;
-}
-
-input {
-    width: 100%;
-    padding: 14px;
-    border: 1px solid #dce2eb;
-    border-radius: 8px;
-    font-size: 16px;
-}
-
-.submit {
-    width: 100%;
-    padding: 15px;
-    margin-top: 25px;
-    border: none;
-    border-radius: 8px;
-    background: #102b50;
-    color: white;
-    font-size: 16px;
-    font-weight: bold;
-}
-
-.notice {
-    background: #fff6df;
-    color: #805b00;
-    padding: 12px;
-    border-radius: 8px;
-    font-size: 12px;
-    margin-top: 20px;
-}
-
-footer {
-    text-align: center;
-    color: #8792a2;
-    font-size: 12px;
-    margin-top: 30px;
-}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#f3f6fb;color:#172b49}
+button,input,select{font:inherit}
+button{cursor:pointer;border:0;border-radius:9px;padding:12px 16px}
+.primary{background:#102b50;color:white}
+.green{background:#087d60;color:white}
+.red{background:#b93838;color:white}
+.muted{color:#8491a3}
+.top{background:#102b50;color:white;padding:22px}
+.top h1{font-size:25px}
+.top p{color:#c5d4e7;margin-top:7px}
+.wrap{max-width:1250px;margin:auto;padding:20px}
+.tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+.tabs button{background:#e5ebf4;color:#193453}
+.tabs button.active{background:#102b50;color:white}
+.card{background:white;border-radius:15px;padding:20px;margin-bottom:16px;box-shadow:0 3px 15px #102b5010}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:15px}
+.metric{font-size:25px;font-weight:bold;margin-top:12px}
+h2{font-size:22px;margin-bottom:18px}
+h3{margin-bottom:12px}
+label{display:block;font-size:13px;font-weight:bold;margin:13px 0 6px}
+input,select{width:100%;padding:13px;border:1px solid #dce3ec;border-radius:9px;background:white}
+table{width:100%;border-collapse:collapse;min-width:650px}
+th,td{text-align:left;padding:13px;border-bottom:1px solid #edf0f4;font-size:13px}
+th{color:#718096;background:#f7f9fc}
+.tablebox{overflow-x:auto}
+.badge{padding:5px 9px;border-radius:20px;background:#e5f5ed;color:#087d60;font-size:12px}
+.badge.redbg{background:#ffeded;color:#b93838}
+.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+.actions button{font-size:12px;padding:9px}
+.hidden{display:none!important}
+.notice{background:#fff5dc;color:#795c18;padding:13px;border-radius:9px;margin:15px 0;font-size:13px}
+.balance{background:linear-gradient(120deg,#102b50,#176b70);color:white}
+.balance .metric{font-size:32px}
+small{color:#8491a3}
+footer{text-align:center;color:#8491a3;padding:25px;font-size:12px}
+@media(max-width:600px){.wrap{padding:12px}.top{padding:18px}.card{padding:15px}}
 </style>
 </head>
-
 <body>
 
-<header>
-    <div class="logo">SOCIETY SAVINGS</div>
-    <p>Your Society. Your Savings.</p>
+<header class="top">
+<h1>SOCIETY SAVINGS</h1>
+<p>Financial Management Platform · India</p>
 </header>
 
-<div class="container">
-
-    <div class="tabs">
-        <button id="loginTab" class="active"
-        onclick="showForm('login')">Login</button>
-
-        <button id="registerTab"
-        onclick="showForm('register')">Register</button>
-    </div>
-
-    <h2 id="heading">Welcome Back!</h2>
-
-    <p class="subtitle" id="subtitle">
-        Login to access your savings account.
-    </p>
-
-    <form onsubmit="demoSubmit(event)">
-
-        <div id="nameField" style="display:none">
-            <label>Full Name</label>
-            <input type="text" id="name"
-            placeholder="Enter your full name">
-        </div>
-
-        <label>Mobile Number</label>
-        <input type="tel" id="mobile"
-        placeholder="Enter mobile number"
-        pattern="[0-9]{10}" maxlength="10"
-        required>
-
-        <label>Password</label>
-        <input type="password" id="password"
-        placeholder="Enter password"
-        minlength="8" required>
-
-        <div id="confirmField" style="display:none">
-            <label>Confirm Password</label>
-            <input type="password" id="confirm"
-            placeholder="Confirm password">
-        </div>
-
-        <button class="submit" id="submitButton">
-            Login
-        </button>
-
-    </form>
-
-    <div class="notice">
-        DEMO VERSION: Authentication is not connected yet.
-        Do not enter real passwords or financial information.
-    </div>
-
-    <footer>
-        © 2026 Society Savings Management System
-    </footer>
-
+<div class="wrap">
+<div class="tabs">
+<button class="active" onclick="show('customer',this)">Customer App</button>
+<button onclick="show('admin',this)">Admin Panel</button>
 </div>
 
+<section id="customer">
+<div class="card">
+<h2>Welcome to Society Savings</h2>
+<div class="tabs">
+<button class="active" onclick="customerTab('login',this)">Login</button>
+<button onclick="customerTab('register',this)">Register</button>
+</div>
+<div id="login">
+<label>Mobile Number</label>
+<input placeholder="Enter mobile number" maxlength="10">
+<label>Password</label>
+<input type="password" placeholder="Enter password">
+<button class="primary" style="width:100%;margin-top:15px" onclick="alert('Demo only: authentication is not connected.')">Login</button>
+</div>
+<div id="register" class="hidden">
+<label>Full Name</label><input placeholder="Customer name">
+<label>Mobile Number</label><input placeholder="10-digit mobile number">
+<label>Password</label><input type="password" placeholder="Create password">
+<button class="primary" style="margin-top:15px" onclick="alert('Demo only: registration is not connected.')">Create Account</button>
+</div>
+</div>
+
+<div class="grid">
+<div class="card balance">
+<small style="color:#d6e6ed">AVAILABLE BALANCE · DEMO</small>
+<div class="metric">₹1,25,000.00</div>
+<p style="margin-top:10px">Account: 1512123456789</p>
+<p>IFSC-style code: FINANCLE00001</p>
+</div>
+<div class="card"><small>ACCOUNT STATUS</small><div class="metric">Active</div></div>
+<div class="card"><small>KYC STATUS</small><div class="metric">Verified</div></div>
+</div>
+
+<div class="grid">
+<div class="card"><h3>＋ Add Money</h3><p class="muted">Submit a deposit request.</p><button class="primary" onclick="alert('Demo deposit request')">Continue</button></div>
+<div class="card"><h3>⇄ Transfer</h3><p class="muted">Internal transfer interface.</p><button class="primary" onclick="alert('Demo transfer only')">Transfer</button></div>
+<div class="card"><h3>▤ Passbook</h3><p class="muted">View account transactions.</p><button class="primary" onclick="alert('Demo passbook')">View</button></div>
+<div class="card"><h3>♧ Loans</h3><p class="muted">Loan application interface.</p><button class="primary" onclick="alert('Demo loan application')">Apply</button></div>
+</div>
+
+<div class="card">
+<h3>Recent Transactions</h3>
+<div class="tablebox"><table>
+<thead><tr><th>Date</th><th>Description</th><th>Type</th><th>Amount</th></tr></thead>
+<tbody>
+<tr><td>28-10-2026</td><td>Monthly Savings</td><td>Credit</td><td>₹5,000</td></tr>
+<tr><td>25-10-2026</td><td>Internal Transfer</td><td>Debit</td><td>₹1,000</td></tr>
+<tr><td>20-10-2026</td><td>Deposit</td><td>Credit</td><td>₹10,000</td></tr>
+</tbody></table></div>
+</div>
+</section>
+
+<section id="admin" class="hidden">
+<div class="card">
+<h2>Administration Overview</h2>
+<p class="muted">Society Savings · Operations Console</p>
+<div class="notice">DEMO ENVIRONMENT — No real customer accounts or funds are affected.</div>
+</div>
+
+<div class="grid">
+<div class="card"><small>Total Customers</small><div class="metric">1,284</div></div>
+<div class="card"><small>Active Accounts</small><div class="metric">1,192</div></div>
+<div class="card"><small>Pending KYC</small><div class="metric">34</div></div>
+<div class="card"><small>Pending Requests</small><div class="metric">18</div></div>
+</div>
+
+<div class="card">
+<h3>Customer Search</h3>
+<label>Search by account number, mobile or customer ID</label>
+<input id="search" placeholder="Enter search details" oninput="searchCustomer()">
+<div id="searchResult" class="notice hidden"></div>
+</div>
+
+<div class="card">
+<h3>Customer Directory</h3>
+<div class="tablebox"><table id="customers">
+<thead><tr><th>Customer</th><th>Account</th><th>Mobile</th><th>Balance</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Rahul Sharma</td><td>1512123456789</td><td>9876543210</td><td>₹1,25,000</td><td>Active</td></tr>
+<tr><td>Priya Das</td><td>1512987654321</td><td>9876501234</td><td>₹82,500</td><td>Active</td></tr>
+<tr><td>Amit Roy</td><td>1512112233445</td><td>9876512345</td><td>₹45,000</td><td>Restricted</td></tr>
+</tbody></table></div>
+</div>
+
+<div class="card">
+<h3>Account Controls</h3>
+<label>Account Number</label>
+<input id="account" placeholder="Enter account number">
+<label>Action</label>
+<select id="action">
+<option>Block Account</option>
+<option>Unblock Account</option>
+<option>Debit Freeze</option>
+<option>Debit Unfreeze</option>
+<option>Credit Freeze</option>
+<option>Credit Unfreeze</option>
+<option>Total Freeze</option>
+<option>Request Re-KYC</option>
+<option>Mark Lien</option>
+<option>Release Lien</option>
+<option>Initiate Account Closure</option>
+</select>
+<label>Reason / Reference</label>
+<input id="reason" placeholder="Enter reason">
+<button class="primary" style="margin-top:15px" onclick="performAction()">Submit Demo Action</button>
+</div>
+
+<div class="grid">
+<div class="card">
+<h3>Financial Adjustment</h3>
+<label>Account Number</label><input placeholder="Account number" id="moneyAccount">
+<label>Amount (INR)</label><input type="number" id="amount" placeholder="₹ Amount">
+<label>Operation</label>
+<select id="operation"><option>Credit Adjustment</option><option>Debit Adjustment</option></select>
+<label>Reason</label><input id="moneyReason" placeholder="Supporting reference">
+<button class="green" style="margin-top:15px" onclick="financialAction()">Submit for Demo Approval</button>
+</div>
+<div class="card">
+<h3>KYC Management</h3>
+<label>Account Number</label><input placeholder="Account number">
+<label>Decision</label><select><option>Request Re-KYC</option><option>Mark Pending</option><option>Approve KYC</option><option>Reject KYC</option></select>
+<label>Remarks</label><input placeholder="Enter remarks">
+<button class="primary" style="margin-top:15px" onclick="alert('Demo KYC workflow only')">Submit</button>
+</div>
+</div>
+
+<div class="card">
+<h3>Recent Admin Activity</h3>
+<div id="logs" class="muted">No actions recorded in this session.</div>
+</div>
+</section>
+</div>
+
+<footer>Society Savings Management System · Prototype · INR (₹)</footer>
+
 <script>
-let currentMode = "login";
-
-function showForm(mode) {
-    currentMode = mode;
-
-    const register = mode === "register";
-
-    document.getElementById("nameField").style.display =
-        register ? "block" : "none";
-
-    document.getElementById("confirmField").style.display =
-        register ? "block" : "none";
-
-    document.getElementById("name").required = register;
-    document.getElementById("confirm").required = register;
-
-    document.getElementById("heading").textContent =
-        register ? "Create Account" : "Welcome Back!";
-
-    document.getElementById("subtitle").textContent =
-        register ? "Join your society today." :
-        "Login to access your savings account.";
-
-    document.getElementById("submitButton").textContent =
-        register ? "Create Account" : "Login";
-
-    document.getElementById("loginTab").className =
-        register ? "" : "active";
-
-    document.getElementById("registerTab").className =
-        register ? "active" : "";
+function show(id,btn){
+document.getElementById('customer').classList.toggle('hidden',id!=='customer');
+document.getElementById('admin').classList.toggle('hidden',id!=='admin');
+document.querySelectorAll('.tabs:first-child button').forEach(b=>b.classList.remove('active'));
+btn.classList.add('active');
 }
-
-function demoSubmit(event) {
-    event.preventDefault();
-
-    if (currentMode === "register") {
-        if (document.getElementById("password").value !==
-            document.getElementById("confirm").value) {
-            alert("Passwords do not match.");
-            return;
-        }
-    }
-
-    alert("Demo interface only. Backend authentication is not connected yet.");
+function customerTab(id,btn){
+document.getElementById('login').classList.toggle('hidden',id!=='login');
+document.getElementById('register').classList.toggle('hidden',id!=='register');
+btn.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+btn.classList.add('active');
+}
+const demoCustomers=[
+['Rahul Sharma','1512123456789','9876543210','CUST001'],
+['Priya Das','1512987654321','9876501234','CUST002'],
+['Amit Roy','1512112233445','9876512345','CUST003']
+];
+function searchCustomer(){
+let q=document.getElementById('search').value.trim().toLowerCase();
+let found=demoCustomers.filter(c=>c.join(' ').toLowerCase().includes(q));
+let box=document.getElementById('searchResult');
+box.classList.toggle('hidden',!q);
+box.innerHTML=q?(found.length?found.map(c=>'<b>'+c[0]+'</b><br>Account: '+c[1]+'<br>Mobile: '+c[2]+'<br>Customer ID: '+c[3]).join('<hr>'):'No matching demo customer'):'';
+}
+function log(text){
+let box=document.getElementById('logs');
+if(box.innerText==='No actions recorded in this session.')box.innerHTML='';
+box.innerHTML='<p style="padding:8px;border-bottom:1px solid #eee">'+new Date().toLocaleString()+' — '+text+'</p>'+box.innerHTML;
+}
+function performAction(){
+let a=document.getElementById('account').value.trim();
+let action=document.getElementById('action').value;
+let reason=document.getElementById('reason').value.trim();
+if(!a||!reason){alert('Enter account number and reason.');return}
+log(action+' — '+a+' — '+reason+' (DEMO)');
+alert('Demo action recorded. No real account was changed.');
+}
+function financialAction(){
+let a=document.getElementById('moneyAccount').value.trim();
+let amount=Number(document.getElementById('amount').value);
+let op=document.getElementById('operation').value;
+let reason=document.getElementById('moneyReason').value.trim();
+if(!a||!reason||!Number.isFinite(amount)||amount<=0){alert('Enter valid account, amount and reason.');return}
+log(op+' — '+a+' — ₹'+amount.toFixed(2)+' (DEMO / NOT POSTED)');
+alert('Demo adjustment request recorded. No balance was changed.');
 }
 </script>
-
 </body>
-  </html>
+</html>
