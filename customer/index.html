@@ -8,52 +8,68 @@
 
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#f1f5f4;font-family:Arial,sans-serif;color:#172b35}
-header{background:#063044;color:white;padding:28px 22px;border-radius:0 0 25px 25px}
-header h1{margin:0 0 8px}
-header p{margin:0;color:#c7d8df}
-.card{background:white;margin:20px 16px;padding:23px;border-radius:18px;box-shadow:0 5px 25px #0000000b}
-h2{margin-top:0}
-input,select{width:100%;padding:15px;margin:8px 0 16px;border:1px solid #d9e1e2;border-radius:11px;font-size:16px;background:white}
-label{font-weight:bold;font-size:14px}
-button{width:100%;padding:16px;background:#087c65;color:white;border:0;border-radius:12px;font-size:16px;font-weight:bold;margin:7px 0}
-button:disabled{opacity:.5}
-.secondary{background:#e5f2ee;color:#087c65}
+body{margin:0;background:#f2f5f7;font-family:Arial,sans-serif;color:#172b35}
+header{background:#063044;color:white;padding:22px;display:flex;justify-content:space-between;align-items:center}
+header h2{margin:0}
+header p{margin:5px 0 0;color:#c7d8df;font-size:13px}
+.card{background:white;margin:16px;padding:20px;border-radius:18px;box-shadow:0 4px 20px #0000000b}
 .hidden{display:none!important}
-#message,.status{margin-top:12px;line-height:1.5}
-.status{padding:14px;background:#eaf5f1;border-radius:10px}
-.success{text-align:center;padding:20px}
-.tick{font-size:65px;color:#07966d}
-.section{border-top:1px solid #eee;padding-top:18px;margin-top:20px}
+label{font-size:14px;font-weight:bold}
+input,select{width:100%;padding:14px;margin:8px 0 15px;border:1px solid #d9e1e5;border-radius:10px;font-size:15px;background:white}
+button{border:0;border-radius:11px;padding:14px;background:#087c65;color:white;font-size:15px;font-weight:bold;cursor:pointer}
+button:disabled{opacity:.5}
+.full{width:100%;margin:7px 0}
+.secondary{background:#e7f2ef;color:#087c65}
+.status{background:#eaf5f1;padding:15px;border-radius:12px;line-height:1.6}
+.balance-card{background:linear-gradient(135deg,#063044,#087c65);color:white;padding:25px;border-radius:20px;margin:16px}
+.balance-card small{color:#c8e5df}
+.balance-card h1{font-size:36px;margin:12px 0}
+.account-mini{font-size:13px;color:#d2e7e3}
+.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px}
+.action{background:white;border-radius:14px;padding:17px 5px;text-align:center;box-shadow:0 3px 12px #00000008}
+.action span{font-size:25px;display:block;margin-bottom:8px}
+.action button{background:transparent;color:#087c65;padding:5px;font-size:13px}
+.info-row{display:flex;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px solid #eee;font-size:14px}
+.info-row strong{text-align:right;word-break:break-word}
+.menu{position:absolute;right:12px;top:65px;background:white;width:210px;border-radius:13px;box-shadow:0 5px 25px #0003;z-index:10;overflow:hidden}
+.menu button{display:block;width:100%;text-align:left;background:white;color:#172b35;border-radius:0;border-bottom:1px solid #eee}
+.tick{font-size:55px;color:#07966d;text-align:center}
 </style>
 </head>
 
 <body>
 
 <header>
-<h1>Society Savings</h1>
+<div>
+<h2>Society Savings</h2>
 <p>Your society account portal</p>
+</div>
+<button id="menuBtn" onclick="toggleMenu()">⋮</button>
 </header>
+
+<!-- LOGIN -->
 
 <div class="card" id="authCard">
 <h2 id="heading">Member Login</h2>
 <p id="description">Sign in using your registered mobile number.</p>
 
 <div id="registerFields" class="hidden">
-<label>Full name</label>
-<input id="name" type="text" placeholder="Enter full name">
+<label>Full Name</label>
+<input id="name" placeholder="Enter full name">
 </div>
 
-<label>Mobile number</label>
-<input id="mobile" type="tel" maxlength="10" placeholder="10-digit mobile number">
+<label>Mobile Number</label>
+<input id="mobile" type="tel" maxlength="10">
 
 <label>Password</label>
-<input id="password" type="password" placeholder="Password">
+<input id="password" type="password">
 
-<button id="submitBtn" onclick="submitForm()">Sign In</button>
-<button class="secondary" id="switchBtn" onclick="toggleMode()">Create Account</button>
+<button class="full" id="submitBtn" onclick="submitForm()">Sign In</button>
+<button class="full secondary" id="switchBtn" onclick="toggleMode()">Create Account</button>
 <p id="message"></p>
 </div>
+
+<!-- KYC FORM -->
 
 <div class="card hidden" id="kycCard">
 <h2>Complete Your KYC</h2>
@@ -61,7 +77,7 @@ button:disabled{opacity:.5}
 
 <form id="kycForm">
 
-<label>Select Identity Document</label>
+<label>Identity Document</label>
 <select id="documentType" required>
 <option value="">Choose document</option>
 <option value="AADHAAR">Aadhaar Card</option>
@@ -71,22 +87,22 @@ button:disabled{opacity:.5}
 </select>
 
 <label>Document Number</label>
-<input id="documentNumber" required placeholder="Enter document number">
+<input id="documentNumber" required>
 
 <label>Date of Birth</label>
 <input id="dob" type="date" required>
 
 <label>Full Legal Name</label>
-<input id="fullName" required placeholder="Enter full name">
+<input id="fullName" required>
 
 <label>Father's Name</label>
-<input id="fatherName" required placeholder="Enter father's name">
+<input id="fatherName" required>
 
 <label>Mother's Name</label>
-<input id="motherName" required placeholder="Enter mother's name">
+<input id="motherName" required>
 
 <label>Annual Income (₹)</label>
-<input id="income" type="number" min="0" step="1" required placeholder="Annual income">
+<input id="income" type="number" min="0" required>
 
 <label>Occupation</label>
 <select id="occupation" required>
@@ -99,9 +115,7 @@ button:disabled{opacity:.5}
 <option>Homemaker</option>
 <option>Retired</option>
 <option>Other</option>
-</select>
-
-<div class="section">
+</select><div class="section">
 <h3>Residential Address</h3>
 
 <label>House / Flat Number</label>
@@ -126,19 +140,20 @@ button:disabled{opacity:.5}
 <input id="state" required>
 
 <label>PIN Code</label>
-<input id="pinCode" type="text" maxlength="6" pattern="[0-9]{6}" required>
+<input id="pinCode" maxlength="6" pattern="[0-9]{6}" required>
 </div>
 
-<p style="font-size:13px;color:#667">
-By submitting, you confirm that the information provided is accurate and consent to its processing for KYC purposes.
+<p style="font-size:12px;color:#667">
+By submitting, you confirm that the information provided is accurate.
 </p>
 
-<button type="submit" id="kycSubmit">Submit KYC</button>
-<button type="button" class="secondary" onclick="logout()">Sign Out</button>
-
+<button class="full" type="submit" id="kycSubmit">Submit KYC</button>
+<button class="full secondary" type="button" onclick="logout()">Sign Out</button>
 </form>
 <p id="kycMessage"></p>
 </div>
+
+<!-- PENDING KYC -->
 
 <div class="card hidden" id="pendingCard">
 <h2>KYC Application Submitted</h2>
@@ -147,9 +162,10 @@ Your application is awaiting admin verification.
 <br><br>
 <strong>Status: UNDER REVIEW</strong>
 </div>
-<p>Your account details will be available after approval.</p>
-<button onclick="logout()">Sign Out</button>
+<button class="full" onclick="logout()">Sign Out</button>
 </div>
+
+<!-- REJECTED KYC -->
 
 <div class="card hidden" id="rejectedCard">
 <h2>KYC Application Rejected</h2>
@@ -157,26 +173,200 @@ Your application is awaiting admin verification.
 <strong>Status: REJECTED</strong>
 <p id="rejectionReason"></p>
 </div>
-<button class="secondary" onclick="logout()">Sign Out</button>
+<button class="full" onclick="logout()">Sign Out</button>
 </div>
 
-<div class="card hidden" id="verifiedCard">
-<div class="success">
-<div class="tick">✓</div>
-<h2>KYC VERIFIED!</h2>
-<p>Your KYC verification has been approved successfully.</p>
+<!-- CUSTOMER DASHBOARD -->
+
+<div id="dashboard" class="hidden">
+
+<div class="balance-card">
+<small>AVAILABLE BALANCE</small>
+<h1 id="balance">₹0.00</h1>
+<div class="account-mini">
+Account No: <span id="miniAccount">Loading...</span>
+</div>
 </div>
 
-<div class="status">
-<strong>Your Account Details</strong>
-<p id="accountNumber">Loading account number...</p>
-<p id="balance">Loading balance...</p>
+<div class="card" style="margin-top:-5px">
+<button class="full" onclick="openPage('addMoneyPage')">
+＋ Add Money
+</button>
 </div>
 
-<button disabled>Add Money — Coming Soon</button>
+<div class="actions">
+
+<div class="action">
+<span>↗</span>
+<button onclick="comingSoon()">Send Money</button>
+</div>
+
+<div class="action">
+<span>↔</span>
+<button onclick="openPage('historyPage')">History</button>
+</div>
+
+<div class="action">
+<span>⋮</span>
+<button onclick="toggleMenu()">More</button>
+</div>
+
+</div>
+
+<div class="menu hidden" id="mainMenu">
+<button onclick="openPage('accountPage')">My Account</button>
+<button onclick="openPage('kycStatusPage')">KYC Status</button>
+<button onclick="openPage('historyPage')">Transaction History</button>
+<button onclick="openPage('contactPage')">Contact Us</button>
 <button onclick="logout()">Sign Out</button>
 </div>
 
+</div><!-- MY ACCOUNT PAGE -->
+
+<div id="accountPage" class="hidden">
+<div class="card">
+<h2>My Account</h2>
+
+<div class="info-row">
+<span>Account Holder</span>
+<strong id="accountHolder">Loading...</strong>
+</div>
+
+<div class="info-row">
+<span>Account Number</span>
+<strong id="accountNumber">Loading...</strong>
+</div>
+
+<div class="info-row">
+<span>Branch Name</span>
+<strong id="branchName">Not available</strong>
+</div>
+
+<div class="info-row">
+<span>Branch Code</span>
+<strong id="branchCode">Loading...</strong>
+</div>
+
+<div class="info-row">
+<span>Account Status</span>
+<strong id="accountStatus">Loading...</strong>
+</div>
+
+<div class="info-row">
+<span>Available Balance</span>
+<strong id="accountBalance">₹0.00</strong>
+</div>
+
+<div class="info-row">
+<span>Lien Amount</span>
+<strong id="lienAmount">₹0.00</strong>
+</div>
+
+<button class="full secondary" onclick="copyAccount()">Copy Account Number</button>
+<button class="full" onclick="goDashboard()">Back to Dashboard</button>
+</div>
+</div>
+
+<!-- KYC STATUS PAGE -->
+
+<div id="kycStatusPage" class="hidden">
+<div class="card">
+<div class="tick">✓</div>
+<h2>KYC Verified</h2>
+
+<div class="status">
+<strong>VERIFICATION SUCCESSFUL</strong>
+<p>Your KYC application has been approved.</p>
+</div>
+
+<div class="info-row">
+<span>Application ID</span>
+<strong id="kycApplicationId">Loading...</strong>
+</div>
+
+<div class="info-row">
+<span>Document Type</span>
+<strong id="kycDocumentType">Loading...</strong>
+</div>
+
+<button class="full" onclick="goDashboard()">Back to Dashboard</button>
+</div>
+</div><!-- ADD MONEY PAGE -->
+
+<div id="addMoneyPage" class="hidden">
+<div class="card">
+
+<h2>Add Money</h2>
+<p>Enter the amount you want to deposit.</p>
+
+<label>Deposit Amount (₹)</label>
+<input id="depositAmount" type="number" min="1" placeholder="Enter amount">
+
+<button class="full" onclick="showPaymentDetails()">Continue</button>
+
+<div id="paymentDetails" class="hidden">
+<div class="status">
+<strong>Society Payment UPI ID</strong>
+<h3 id="upiDisplay">milldebniore-1@oksbi</h3>
+
+<button class="secondary full" onclick="copyUPI()">Copy UPI ID</button>
+
+<p>Pay the exact amount using your UPI application.</p>
+<p>After payment, return here to enter your UTR number.</p>
+</div>
+
+<button class="full" onclick="showUTRForm()">Confirm Pay</button>
+</div>
+
+<div id="utrForm" class="hidden">
+<h3>Confirm Your Payment</h3>
+
+<label>UTR / Transaction ID</label>
+<input id="utrNumber" placeholder="Enter UTR number">
+
+<p id="depositMessage"></p>
+
+<button class="full" onclick="submitDeposit()">Submit Request</button>
+</div>
+
+<p style="font-size:12px;color:#777">
+Payment submission will be activated after secure database integration. This screen does not confirm payment.
+</p>
+
+<button class="full secondary" onclick="goDashboard()">Back to Dashboard</button>
+</div>
+</div>
+
+<!-- TRANSACTION HISTORY -->
+
+<div id="historyPage" class="hidden">
+<div class="card">
+<h2>Transaction History</h2>
+
+<div class="status">
+Transaction history will appear here once the transaction system is connected.
+</div>
+
+<button class="full" onclick="goDashboard()">Back to Dashboard</button>
+</div>
+</div>
+
+<!-- CONTACT US -->
+
+<div id="contactPage" class="hidden">
+<div class="card">
+<h2>Contact Us</h2>
+
+<p>For account-related assistance, contact your society administrator.</p>
+
+<div class="status">
+<strong>Society Savings Support</strong>
+<p>Contact details will be updated here.</p>
+</div>
+
+<button class="full" onclick="goDashboard()">Back to Dashboard</button>
+</div>
+</div>
 <script>
 const SUPABASE_URL="https://mmgvfxqqnzqokeuojadp.supabase.co";
 const SUPABASE_KEY="sb_publishable_bm16oFdCJ4oCyR4u8EaXJA_8GK4qXc8";
@@ -186,10 +376,21 @@ const FUNCTION_URL=SUPABASE_URL+"/functions/v1/customer-register";
 
 let registering=false;
 let currentUser=null;
+let currentAccount=null;
+let currentKyc=null;
+
+const pageIds=[
+"authCard","kycCard","pendingCard","rejectedCard",
+"dashboard","accountPage","kycStatusPage",
+"addMoneyPage","historyPage","contactPage"
+];
 
 function hideAll(){
-["authCard","kycCard","pendingCard","rejectedCard","verifiedCard"]
-.forEach(id=>document.getElementById(id).classList.add("hidden"));
+pageIds.forEach(id=>{
+const el=document.getElementById(id);
+if(el)el.classList.add("hidden");
+});
+document.getElementById("mainMenu").classList.add("hidden");
 }
 
 function toggleMode(){
@@ -276,7 +477,7 @@ hideAll();
 
 const {data:kyc,error}=await db
 .from("kyc_submissions")
-.select("id,status,rejection_reason")
+.select("id,status,rejection_reason,document_type")
 .eq("customer_id",user.id)
 .maybeSingle();
 
@@ -285,6 +486,8 @@ document.getElementById("authCard").classList.remove("hidden");
 document.getElementById("message").textContent="Unable to load KYC status: "+error.message;
 return;
 }
+
+currentKyc=kyc;
 
 if(!kyc){
 showKycForm();
@@ -358,52 +561,159 @@ msg.textContent=error.message||"KYC submission failed.";
 }finally{
 btn.disabled=false;
 }
-
 });
+
+async function getCustomerId(){
+
+const {data,error}=await db.rpc("current_customer_id");
+
+if(error)throw error;
+if(!data)throw new Error("Customer account mapping not found.");
+
+return data;
+}
 
 async function showVerified(){
 
 hideAll();
-document.getElementById("verifiedCard").classList.remove("hidden");
 
-const {data:account,error}=await db
-.from("accounts")
-.select("account_no,balance_paise,status")
-.eq("customer_id",currentUser.id)
-.maybeSingle();
+const {data:customerId,error:customerError}=await db.rpc("current_customer_id");
 
-if(error||!account){
-document.getElementById("accountNumber").textContent="Account details are not currently accessible.";
-document.getElementById("balance").textContent="Please contact the administrator.";
+if(customerError||!customerId){
+document.getElementById("authCard").classList.remove("hidden");
+document.getElementById("message").textContent="Unable to identify your customer account.";
 return;
 }
 
-document.getElementById("accountNumber").textContent="Account Number: "+account.account_no;
+const {data:account,error}=await db
+.from("accounts")
+.select("account_no,branch_code,status,balance_paise,lien_paise,account_blocked,debit_frozen,customers(full_name)")
+.eq("customer_id",customerId)
+.maybeSingle();
 
-const rupees=(Number(account.balance_paise||0)/100).toLocaleString("en-IN",{
+if(error||!account){
+document.getElementById("authCard").classList.remove("hidden");
+document.getElementById("message").textContent="Account details unavailable. Please contact the administrator.";
+return;
+}
+
+currentAccount=account;
+
+const balance=Number(account.balance_paise||0);
+const lien=Number(account.lien_paise||0);
+const available=Math.max(0,balance-lien);
+
+document.getElementById("balance").textContent=formatMoney(available);
+document.getElementById("miniAccount").textContent=account.account_no||"Not available";
+
+document.getElementById("accountHolder").textContent=account.customers?.full_name||"Not available";
+document.getElementById("accountNumber").textContent=account.account_no||"Not available";
+document.getElementById("branchName").textContent="Not configured";
+document.getElementById("branchCode").textContent=account.branch_code||"Not available";
+document.getElementById("accountStatus").textContent=account.status||"Not available";
+document.getElementById("accountBalance").textContent=formatMoney(available);
+document.getElementById("lienAmount").textContent=formatMoney(lien);
+
+document.getElementById("kycApplicationId").textContent=currentKyc?.id||"Not available";
+document.getElementById("kycDocumentType").textContent=currentKyc?.document_type||"Not available";
+
+document.getElementById("dashboard").classList.remove("hidden");
+}
+
+function formatMoney(paise){
+return (Number(paise||0)/100).toLocaleString("en-IN",{
 style:"currency",
 currency:"INR"
 });
+}
 
-document.getElementById("balance").textContent="Available Balance: "+rupees;
+function openPage(id){
+hideAll();
+
+const page=document.getElementById(id);
+if(page)page.classList.remove("hidden");
+
+window.scrollTo(0,0);
+}
+
+function goDashboard(){
+hideAll();
+document.getElementById("dashboard").classList.remove("hidden");
+window.scrollTo(0,0);
+}
+
+function toggleMenu(){
+document.getElementById("mainMenu").classList.toggle("hidden");
+}
+
+function comingSoon(){
+alert("This feature will be available in a future update.");
+}
+
+async function copyAccount(){
+if(!currentAccount?.account_no)return;
+
+try{
+await navigator.clipboard.writeText(currentAccount.account_no);
+alert("Account number copied.");
+}catch(error){
+alert("Unable to copy. Please copy the account number manually.");
+}
+}
+
+async function copyUPI(){
+try{
+await navigator.clipboard.writeText("milldebniore-1@oksbi");
+alert("UPI ID copied.");
+}catch(error){
+alert("UPI ID: milldebniore-1@oksbi");
+}
+}
+
+function showPaymentDetails(){
+const amount=Number(document.getElementById("depositAmount").value);
+
+if(!Number.isFinite(amount)||amount<=0){
+alert("Enter a valid deposit amount.");
+return;
+}
+
+document.getElementById("paymentDetails").classList.remove("hidden");
+document.getElementById("utrForm").classList.add("hidden");
+}
+
+function showUTRForm(){
+document.getElementById("utrForm").classList.remove("hidden");
+}
+
+function submitDeposit(){
+document.getElementById("depositMessage").textContent=
+"Deposit requests are not active yet. Please do not treat this screen as a payment confirmation.";
 }
 
 async function logout(){
 
 await db.auth.signOut();
+
 currentUser=null;
+currentAccount=null;
+currentKyc=null;
+
 hideAll();
 document.getElementById("authCard").classList.remove("hidden");
+
 document.getElementById("mobile").value="";
 document.getElementById("password").value="";
+document.getElementById("message").textContent="";
 }
 
 db.auth.getSession().then(async({data})=>{
 if(data.session){
 await loadCustomer(data.session.user);
+}else{
+hideAll();
+document.getElementById("authCard").classList.remove("hidden");
 }
 });
-</script>
-
-</body>
+</script></body>
 </html>
