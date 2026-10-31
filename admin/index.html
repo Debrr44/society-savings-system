@@ -197,10 +197,142 @@ td{padding:14px 10px;border-bottom:1px solid #f0f2f3}
 </section>
 
 <section class="page" id="accounts">
-<div class="heading"><div><h1>Account Management</h1><p>Account status and restriction requests</p></div></div>
+
+<div class="heading">
+  <div>
+    <h1>Account Management</h1>
+    <p>Search, manage and control customer accounts</p>
+  </div>
+  <span class="badge">ACCOUNT CONTROL</span>
+</div>
+
 <div class="panel">
-<div class="notice">Account block/unblock and debit-freeze controls are disabled until server-side authorization, maker-checker approval, reason capture and immutable audit logging are implemented.</div>
-<div class="empty">No account-control actions are available in this frontend.</div>
+  <h3>Search Customer Account</h3>
+
+  <div class="tools">
+    <input
+      class="search"
+      id="accountSearch"
+      placeholder="Enter 13-digit account number"
+      inputmode="numeric"
+    >
+    <button class="primary" id="accountSearchBtn">
+      Search Account
+    </button>
+  </div>
+
+  <div id="accountMessage" class="notice">
+    Enter an account number to view account details.
+  </div>
+</div>
+
+<div class="panel" id="accountDetails" hidden style="margin-top:18px">
+
+  <h3>Account Holder Information</h3>
+
+  <div class="kyc-detail-grid">
+    <div class="kyc-detail">
+      <small>Customer Name</small>
+      <strong id="accCustomerName">—</strong>
+    </div>
+
+    <div class="kyc-detail">
+      <small>Mobile Number</small>
+      <strong id="accMobile">—</strong>
+    </div>
+
+    <div class="kyc-detail">
+      <small>Account Number</small>
+      <strong id="accNumber">—</strong>
+    </div>
+
+    <div class="kyc-detail">
+      <small>Branch Code</small>
+      <strong id="accBranch">—</strong>
+    </div>
+
+    <div class="kyc-detail">
+      <small>Available Balance</small>
+      <strong id="accBalance">—</strong>
+    </div>
+
+    <div class="kyc-detail">
+      <small>Lien Amount</small>
+      <strong id="accLien">—</strong>
+    </div>
+
+    <div class="kyc-detail">
+      <small>Account Status</small>
+      <strong id="accStatus">—</strong>
+    </div>
+
+    <div class="kyc-detail">
+      <small>Account Restriction</small>
+      <strong id="accRestriction">—</strong>
+    </div>
+  </div>
+
+  <hr style="border:0;border-top:1px solid var(--line);margin:22px 0">
+
+  <h3>Account Controls</h3>
+
+  <div class="tools">
+    <button class="action" id="blockAccountBtn">
+      Block Account
+    </button>
+
+    <button class="action" id="freezeDebitBtn">
+      Freeze Debit
+    </button>
+  </div>
+
+  <div class="field" style="margin:16px 0">
+    <label>Transaction Limit (₹)</label>
+    <input
+      id="accountLimit"
+      type="number"
+      min="0"
+      max="50000"
+      value="50000"
+    >
+    <button class="primary" id="saveAccountLimit"
+      style="margin-top:10px">
+      Save Transaction Limit
+    </button>
+  </div>
+
+  <hr style="border:0;border-top:1px solid var(--line);margin:22px 0">
+
+  <h3>Close Account</h3>
+
+  <div class="notice">
+    Account closure requires zero balance and zero lien.
+    Closure is permanent in this workflow.
+  </div>
+
+  <div class="field">
+    <label>Closure Reason (Mandatory)</label>
+    <input
+      id="accountClosureReason"
+      type="text"
+      placeholder="Enter reason for account closure"
+    >
+  </div>
+
+  <button class="action danger"
+    id="closeAccountBtn"
+    style="margin-top:12px">
+    Close Account
+  </button>
+
+  <hr style="border:0;border-top:1px solid var(--line);margin:22px 0">
+
+  <h3>Administrative Audit History</h3>
+
+  <div id="accountAuditRows" class="empty">
+    Search an account to view its audit history.
+  </div>
+
 </div>
 </section>
 
@@ -752,6 +884,301 @@ data.map(x=>`
 </div>
 `).join(''):
 '<div class="empty">No customer records found.</div>');
+}
+// ACCOUNT MANAGEMENT
+
+let currentAccount = null;
+
+function formatRupees(paise) {
+  return '₹' + (Number(paise || 0) / 100)
+    .toLocaleString('en-IN', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+}
+
+function showAccountMessage(message, error = false) {
+  const box = $('accountMessage');
+  box.textContent = message;
+  box.style.background = error ? '#fde8e8' : '#eef5f8';
+  box.style.color = error ? '#b42318' : '#365568';
+}
+
+async function searchAccount() {
+  const accountNo = $('accountSearch').value.trim();
+
+  if (!/^\d{13}$/.test(accountNo)) {
+    showAccountMessage('Enter a valid 13-digit account number.', true);
+    return;
+  }
+
+  $('accountSearchBtn').disabled = true;
+  showAccountMessage('Searching account...');
+
+  try {
+    const { data, error } = await db
+      .from('accounts')
+      .select(`
+        id,
+        customer_id,
+        account_no,
+        branch_code,
+        status,
+        balance_paise,
+        lien_paise,
+        account_blocked,
+        debit_frozen,
+        transaction_limit_paise,
+        closure_status,
+        customers (
+          full_name,
+          mobile
+        )
+      `)
+      .eq('account_no', accountNo)
+      .maybeSingle();
+
+    if (error) throw error;
+
+    if (!data) {
+      currentAccount = null;
+      $('accountDetails').hidden = true;
+      showAccountMessage('Account not found.', true);
+      return;
+    }
+
+    currentAccount = data;
+    $('accountDetails').hidden = false;
+
+    $('accCustomerName').textContent =
+      data.customers?.full_name || 'Not available';
+
+    $('accMobile').textContent =
+      data.customers?.mobile || 'Not available';
+
+    $('accNumber').textContent = data.account_no;
+    $('accBranch').textContent = data.branch_code;
+    $('accBalance').textContent = formatRupees(data.balance_paise);
+    $('accLien').textContent = formatRupees(data.lien_paise);
+    $('accStatus').textContent = data.status;
+
+    $('accRestriction').textContent =
+      data.account_blocked ? 'Account blocked' :
+      data.debit_frozen ? 'Debit frozen' : 'No restriction';
+
+    $('accountLimit').value =
+      Number(data.transaction_limit_paise || 0) / 100;
+
+    $('blockAccountBtn').textContent =
+      data.account_blocked ? 'Unblock Account' : 'Block Account';
+
+    $('freezeDebitBtn').textContent =
+      data.debit_frozen ? 'Unfreeze Debit' : 'Freeze Debit';
+
+    const closed = data.status === 'CLOSED';
+
+    $('blockAccountBtn').disabled = closed;
+    $('freezeDebitBtn').disabled = closed;
+    $('saveAccountLimit').disabled = closed;
+    $('closeAccountBtn').disabled = closed;
+
+    showAccountMessage('Account loaded successfully.');
+
+    await loadAccountAudit(accountNo);
+
+  } catch (error) {
+    $('accountDetails').hidden = true;
+    showAccountMessage(error.message || 'Account search failed.', true);
+  } finally {
+    $('accountSearchBtn').disabled = false;
+  }
+}
+
+$('accountSearchBtn').addEventListener('click', searchAccount);
+
+$('accountSearch').addEventListener('keydown', event => {
+  if (event.key === 'Enter') searchAccount();
+});
+  // BLOCK / UNBLOCK ACCOUNT
+
+async function runAccountAction(action, reason) {
+  if (!currentAccount) return;
+
+  if (!reason || reason.trim().length < 5) {
+    alert('Enter a valid reason (at least 5 characters).');
+    return;
+  }
+
+  try {
+    const { data, error } = await db.rpc(
+      'admin_control_account',
+      {
+        p_account_no: currentAccount.account_no,
+        p_action: action,
+        p_reason: reason.trim(),
+        p_limit_rupees: null
+      }
+    );
+
+    if (error) throw error;
+
+    alert('Account action completed successfully.');
+    await searchAccount();
+
+  } catch (error) {
+    alert('Action failed: ' + error.message);
+  }
+}
+
+$('blockAccountBtn').addEventListener('click', async () => {
+  const action = currentAccount.account_blocked
+    ? 'UNBLOCK_ACCOUNT'
+    : 'BLOCK_ACCOUNT';
+
+  const reason = prompt('Enter reason for this action:');
+  if (reason === null) return;
+
+  await runAccountAction(action, reason);
+});
+
+$('freezeDebitBtn').addEventListener('click', async () => {
+  const action = currentAccount.debit_frozen
+    ? 'UNFREEZE_DEBIT'
+    : 'FREEZE_DEBIT';
+
+  const reason = prompt('Enter reason for this action:');
+  if (reason === null) return;
+
+  await runAccountAction(action, reason);
+});
+
+
+// TRANSACTION LIMIT
+
+$('saveAccountLimit').addEventListener('click', async () => {
+  if (!currentAccount) return;
+
+  const limit = Number($('accountLimit').value);
+
+  if (!Number.isInteger(limit) || limit < 0 || limit > 50000) {
+    alert('Enter a limit between ₹0 and ₹50,000.');
+    return;
+  }
+
+  const reason = prompt('Enter reason for changing the limit:');
+  if (reason === null) return;
+
+  try {
+    const { error } = await db.rpc(
+      'admin_control_account',
+      {
+        p_account_no: currentAccount.account_no,
+        p_action: 'SET_LIMIT',
+        p_reason: reason.trim(),
+        p_limit_rupees: limit
+      }
+    );
+
+    if (error) throw error;
+
+    alert('Transaction limit updated.');
+    await searchAccount();
+
+  } catch (error) {
+    alert('Update failed: ' + error.message);
+  }
+});
+
+
+// CLOSE ACCOUNT
+
+$('closeAccountBtn').addEventListener('click', async () => {
+  if (!currentAccount) return;
+
+  const reason = $('accountClosureReason').value.trim();
+
+  if (reason.length < 5) {
+    alert('Enter a closure reason of at least 5 characters.');
+    return;
+  }
+
+  const confirmed = confirm(
+    'Permanently close account ' +
+    currentAccount.account_no +
+    '? This action cannot be reversed here.'
+  );
+
+  if (!confirmed) return;
+
+  try {
+    const { data, error } = await db.rpc(
+      'admin_close_account',
+      {
+        p_account_no: currentAccount.account_no,
+        p_reason: reason
+      }
+    );
+
+    if (error) throw error;
+
+    alert('Account closed successfully.');
+    $('accountClosureReason').value = '';
+    await searchAccount();
+
+  } catch (error) {
+    alert('Closure failed: ' + error.message);
+  }
+});
+
+
+// AUDIT HISTORY
+
+async function loadAccountAudit(accountNo) {
+  const box = $('accountAuditRows');
+
+  box.textContent = 'Loading audit history...';
+
+  const { data, error } = await db
+    .from('admin_audit_logs')
+    .select('action,reason,created_at,admin_id')
+    .eq('account_no', accountNo)
+    .order('created_at', { ascending: false })
+    .limit(20);
+
+  if (error) {
+    box.textContent = 'Unable to load audit history: ' + error.message;
+    return;
+  }
+
+  if (!data || !data.length) {
+    box.textContent = 'No audit history available.';
+    return;
+  }
+
+  box.innerHTML = `
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Action</th>
+            <th>Reason</th>
+            <th>Admin ID</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${data.map(item => `
+            <tr>
+              <td>${safe(item.action)}</td>
+              <td>${safe(item.reason)}</td>
+              <td>${safe(item.admin_id)}</td>
+              <td>${safe(new Date(item.created_at).toLocaleString())}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
 }
 </script>
 </body>
