@@ -17,6 +17,7 @@ h2{margin-top:0}
 input,select{width:100%;padding:15px;margin:8px 0 16px;border:1px solid #d9e1e2;border-radius:11px;font-size:16px;background:white}
 label{font-weight:bold;font-size:14px}
 button{width:100%;padding:16px;background:#087c65;color:white;border:0;border-radius:12px;font-size:16px;font-weight:bold;margin:7px 0}
+button:disabled{opacity:.5}
 .secondary{background:#e5f2ee;color:#087c65}
 .hidden{display:none!important}
 #message,.status{margin-top:12px;line-height:1.5}
@@ -34,7 +35,6 @@ button{width:100%;padding:16px;background:#087c65;color:white;border:0;border-ra
 <p>Your society account portal</p>
 </header>
 
-<!-- LOGIN AND REGISTRATION -->
 <div class="card" id="authCard">
 <h2 id="heading">Member Login</h2>
 <p id="description">Sign in using your registered mobile number.</p>
@@ -55,9 +55,7 @@ button{width:100%;padding:16px;background:#087c65;color:white;border:0;border-ra
 <p id="message"></p>
 </div>
 
-<!-- KYC FORM -->
 <div class="card hidden" id="kycCard">
-
 <h2>Complete Your KYC</h2>
 <p>Please enter your personal information accurately.</p>
 
@@ -135,14 +133,13 @@ button{width:100%;padding:16px;background:#087c65;color:white;border:0;border-ra
 By submitting, you confirm that the information provided is accurate and consent to its processing for KYC purposes.
 </p>
 
-<button type="submit" id="kycSubmit">Submit KYC Application</button>
+<button type="submit" id="kycSubmit">Submit KYC</button>
+<button type="button" class="secondary" onclick="logout()">Sign Out</button>
 
 </form>
- <button type="button" class="secondary" onclick="logout()">Sign Out</button>
 <p id="kycMessage"></p>
 </div>
 
-<!-- PENDING SCREEN -->
 <div class="card hidden" id="pendingCard">
 <h2>KYC Application Submitted</h2>
 <div class="status">
@@ -150,22 +147,19 @@ Your application is awaiting admin verification.
 <br><br>
 <strong>Status: UNDER REVIEW</strong>
 </div>
-<p>Your account number and financial information remain hidden until approval.</p>
+<p>Your account details will be available after approval.</p>
 <button onclick="logout()">Sign Out</button>
 </div>
 
-<!-- REJECTED SCREEN -->
 <div class="card hidden" id="rejectedCard">
 <h2>KYC Application Rejected</h2>
 <div class="status">
 <strong>Status: REJECTED</strong>
 <p id="rejectionReason"></p>
 </div>
-<button onclick="showKycForm()">Resubmit KYC</button>
 <button class="secondary" onclick="logout()">Sign Out</button>
 </div>
 
-<!-- VERIFIED SCREEN -->
 <div class="card hidden" id="verifiedCard">
 <div class="success">
 <div class="tick">✓</div>
@@ -179,235 +173,235 @@ Your application is awaiting admin verification.
 <p id="balance">Loading balance...</p>
 </div>
 
-<button disabled style="opacity:.6">Add Money — Coming Soon</button>
+<button disabled>Add Money — Coming Soon</button>
 <button onclick="logout()">Sign Out</button>
 </div>
 
 <script>
-const SUPABASE_URL = "https://mmgvfxqqnzqokeuojadp.supabase.co";
-const SUPABASE_KEY = "sb_publishable_bm16oFdCJ4oCyR4u8EaXJA_8GK4qXc8";
+const SUPABASE_URL="https://mmgvfxqqnzqokeuojadp.supabase.co";
+const SUPABASE_KEY="sb_publishable_bm16oFdCJ4oCyR4u8EaXJA_8GK4qXc8";
 
-const db = window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-const FUNCTION_URL = SUPABASE_URL + "/functions/v1/customer-register";
+const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const FUNCTION_URL=SUPABASE_URL+"/functions/v1/customer-register";
 
-let registering = false;
-let currentUser = null;
+let registering=false;
+let currentUser=null;
 
 function hideAll(){
- ["authCard","kycCard","pendingCard","rejectedCard","verifiedCard"]
- .forEach(id=>document.getElementById(id).classList.add("hidden"));
+["authCard","kycCard","pendingCard","rejectedCard","verifiedCard"]
+.forEach(id=>document.getElementById(id).classList.add("hidden"));
 }
 
 function toggleMode(){
- registering=!registering;
+registering=!registering;
 
- document.getElementById("registerFields").classList.toggle("hidden",!registering);
- document.getElementById("heading").textContent=registering?"Create Account":"Member Login";
- document.getElementById("description").textContent=registering?"Register your Society Savings account.":"Sign in using your registered mobile number.";
- document.getElementById("submitBtn").textContent=registering?"Register Account":"Sign In";
- document.getElementById("switchBtn").textContent=registering?"Back to Login":"Create Account";
- document.getElementById("message").textContent="";
+document.getElementById("registerFields").classList.toggle("hidden",!registering);
+document.getElementById("heading").textContent=registering?"Create Account":"Member Login";
+document.getElementById("description").textContent=registering?"Register your Society Savings account.":"Sign in using your registered mobile number.";
+document.getElementById("submitBtn").textContent=registering?"Register Account":"Sign In";
+document.getElementById("switchBtn").textContent=registering?"Back to Login":"Create Account";
+document.getElementById("message").textContent="";
 }
 
 async function submitForm(){
 
- const msg=document.getElementById("message");
- const mobile=document.getElementById("mobile").value.trim();
- const password=document.getElementById("password").value;
- const full_name=document.getElementById("name").value.trim();
- const btn=document.getElementById("submitBtn");
+const msg=document.getElementById("message");
+const mobile=document.getElementById("mobile").value.trim();
+const password=document.getElementById("password").value;
+const full_name=document.getElementById("name").value.trim();
+const btn=document.getElementById("submitBtn");
 
- if(!/^[0-9]{10}$/.test(mobile)){
-  msg.textContent="Enter a valid 10-digit mobile number.";
-  return;
- }
+if(!/^[0-9]{10}$/.test(mobile)){
+msg.textContent="Enter a valid 10-digit mobile number.";
+return;
+}
 
- if(password.length<10){
-  msg.textContent="Password must contain at least 10 characters.";
-  return;
- }
+if(password.length<10){
+msg.textContent="Password must contain at least 10 characters.";
+return;
+}
 
- btn.disabled=true;
- msg.textContent="Please wait...";
+btn.disabled=true;
+msg.textContent="Please wait...";
 
- try{
+try{
+const email=mobile+"@customers.societysavings.invalid";
 
-  const email=mobile+"@customers.societysavings.invalid";
+if(registering){
 
-  if(registering){
+if(!full_name)throw new Error("Enter your full name.");
 
-   if(!full_name) throw new Error("Enter your full name.");
+const response=await fetch(FUNCTION_URL,{
+method:"POST",
+headers:{
+"Content-Type":"application/json",
+"apikey":SUPABASE_KEY
+},
+body:JSON.stringify({full_name,mobile,password})
+});
 
-   const response=await fetch(FUNCTION_URL,{
-    method:"POST",
-    headers:{"Content-Type":"application/json","apikey":SUPABASE_KEY},
-    body:JSON.stringify({full_name,mobile,password})
-   });
+const result=await response.json();
 
-   const result=await response.json();
+if(!response.ok||!result.success)
+throw new Error(result.error||"Registration failed.");
 
-   if(!response.ok||!result.success)
-    throw new Error(result.error||"Registration failed.");
+registering=false;
+document.getElementById("registerFields").classList.add("hidden");
+document.getElementById("heading").textContent="Member Login";
+document.getElementById("description").textContent="Sign in using your registered mobile number.";
+document.getElementById("submitBtn").textContent="Sign In";
+document.getElementById("switchBtn").textContent="Create Account";
+msg.textContent="Registration successful. Please sign in.";
 
-   registering=false;
-   toggleMode();
-   msg.textContent="Registration successful. Please sign in.";
+}else{
 
-  }else{
+const {data,error}=await db.auth.signInWithPassword({email,password});
 
-   const {data,error}=await db.auth.signInWithPassword({email,password});
+if(error)throw error;
 
-   if(error) throw error;
+await loadCustomer(data.user);
+}
 
-   await loadCustomer(data.user);
-  }
-
- }catch(error){
-  msg.textContent=error.message||"Something went wrong.";
- }finally{
-  btn.disabled=false;
- }
+}catch(error){
+msg.textContent=error.message||"Something went wrong.";
+}finally{
+btn.disabled=false;
+}
 }
 
 async function loadCustomer(user){
 
- currentUser=user;
- hideAll();
+currentUser=user;
+hideAll();
 
- const {data:kyc,error}=await db
- .from("kyc_submissions")
- .select("*")
- .eq("customer_id",user.id)
- .maybeSingle();
+const {data:kyc,error}=await db
+.from("kyc_submissions")
+.select("id,status,rejection_reason")
+.eq("customer_id",user.id)
+.maybeSingle();
 
- if(error){
-  hideAll();
-  document.getElementById("authCard").classList.remove("hidden");
-  document.getElementById("message").textContent="Unable to load KYC status: "+error.message;
-  return;
- }
+if(error){
+document.getElementById("authCard").classList.remove("hidden");
+document.getElementById("message").textContent="Unable to load KYC status: "+error.message;
+return;
+}
 
- if(!kyc){
-  showKycForm();
-  return;
- }
+if(!kyc){
+showKycForm();
+return;
+}
 
- if(kyc.status==="APPROVED"){
-  await showVerified();
- }else if(kyc.status==="REJECTED"){
-  document.getElementById("rejectedCard").classList.remove("hidden");
-  document.getElementById("rejectionReason").textContent=kyc.rejection_reason||"Please contact the administrator.";
- }else{
-  document.getElementById("pendingCard").classList.remove("hidden");
- }
+if(kyc.status==="APPROVED"){
+await showVerified();
+}else if(kyc.status==="REJECTED"){
+document.getElementById("rejectedCard").classList.remove("hidden");
+document.getElementById("rejectionReason").textContent=kyc.rejection_reason||"Please contact the administrator.";
+}else{
+document.getElementById("pendingCard").classList.remove("hidden");
+}
 }
 
 function showKycForm(){
-
- hideAll();
- document.getElementById("kycCard").classList.remove("hidden");
-
+hideAll();
+document.getElementById("kycCard").classList.remove("hidden");
 }
 
 document.getElementById("kycForm").addEventListener("submit",async function(e){
 
- e.preventDefault();
+e.preventDefault();
 
- if(!currentUser){
-  alert("Please sign in again.");
-  return;
- }
+if(!currentUser){
+alert("Please sign in again.");
+return;
+}
 
- const btn=document.getElementById("kycSubmit");
- const msg=document.getElementById("kycMessage");
+const btn=document.getElementById("kycSubmit");
+const msg=document.getElementById("kycMessage");
 
- btn.disabled=true;
- msg.textContent="Submitting application...";
+btn.disabled=true;
+msg.textContent="Submitting application...";
 
- try{
+try{
 
-  const application={
-   customer_id:currentUser.id,
-   document_type:document.getElementById("documentType").value,
-   document_number:document.getElementById("documentNumber").value.trim(),
-   date_of_birth:document.getElementById("dob").value,
-   full_name:document.getElementById("fullName").value.trim(),
-   father_name:document.getElementById("fatherName").value.trim(),
-   mother_name:document.getElementById("motherName").value.trim(),
-   annual_income:Number(document.getElementById("income").value),
-   occupation:document.getElementById("occupation").value,
-   house_address:document.getElementById("house").value.trim(),
-   locality:document.getElementById("locality").value.trim(),
-   city:document.getElementById("city").value.trim(),
-   post_office:document.getElementById("postOffice").value.trim(),
-   police_station:document.getElementById("policeStation").value.trim(),
-   district:document.getElementById("district").value.trim(),
-   state:document.getElementById("state").value.trim(),
-   pin_code:document.getElementById("pinCode").value,
-   status:"PENDING"
-  };
+const application={
+customer_id:currentUser.id,
+document_type:document.getElementById("documentType").value,
+document_number:document.getElementById("documentNumber").value.trim(),
+date_of_birth:document.getElementById("dob").value,
+full_name:document.getElementById("fullName").value.trim(),
+father_name:document.getElementById("fatherName").value.trim(),
+mother_name:document.getElementById("motherName").value.trim(),
+annual_income:Number(document.getElementById("income").value),
+occupation:document.getElementById("occupation").value,
+house_address:document.getElementById("house").value.trim(),
+locality:document.getElementById("locality").value.trim(),
+city:document.getElementById("city").value.trim(),
+post_office:document.getElementById("postOffice").value.trim(),
+police_station:document.getElementById("policeStation").value.trim(),
+district:document.getElementById("district").value.trim(),
+state:document.getElementById("state").value.trim(),
+pin_code:document.getElementById("pinCode").value,
+status:"PENDING"
+};
 
-  if(!application.document_number)
-   throw new Error("Enter your document number.");
+const {error}=await db
+.from("kyc_submissions")
+.insert(application);
 
-  const {error}=await db
-   .from("kyc_submissions")
-   .insert(application);
+if(error)throw error;
 
-  if(error) throw error;
+hideAll();
+document.getElementById("pendingCard").classList.remove("hidden");
 
-  hideAll();
-  document.getElementById("pendingCard").classList.remove("hidden");
-
- }catch(error){
-  msg.textContent=error.message||"KYC submission failed.";
- }finally{
-  btn.disabled=false;
- }
+}catch(error){
+msg.textContent=error.message||"KYC submission failed.";
+}finally{
+btn.disabled=false;
+}
 
 });
 
 async function showVerified(){
 
- hideAll();
- document.getElementById("verifiedCard").classList.remove("hidden");
+hideAll();
+document.getElementById("verifiedCard").classList.remove("hidden");
 
- const {data:account,error}=await db
-  .from("accounts")
-  .select("account_no,balance_paise,status")
-  .eq("customer_id",currentUser.id)
-  .maybeSingle();
+const {data:account,error}=await db
+.from("accounts")
+.select("account_no,balance_paise,status")
+.eq("customer_id",currentUser.id)
+.maybeSingle();
 
- if(error||!account){
-  document.getElementById("accountNumber").textContent="Account details are not currently accessible.";
-  document.getElementById("balance").textContent="Please contact the administrator.";
-  return;
- }
+if(error||!account){
+document.getElementById("accountNumber").textContent="Account details are not currently accessible.";
+document.getElementById("balance").textContent="Please contact the administrator.";
+return;
+}
 
- document.getElementById("accountNumber").textContent="Account Number: "+account.account_no;
+document.getElementById("accountNumber").textContent="Account Number: "+account.account_no;
 
- const rupees=(Number(account.balance_paise||0)/100).toLocaleString("en-IN",{
-  style:"currency",currency:"INR"
- });
+const rupees=(Number(account.balance_paise||0)/100).toLocaleString("en-IN",{
+style:"currency",
+currency:"INR"
+});
 
- document.getElementById("balance").textContent="Available Balance: "+rupees;
-
+document.getElementById("balance").textContent="Available Balance: "+rupees;
 }
 
 async function logout(){
 
- await db.auth.signOut();
- currentUser=null;
- hideAll();
- document.getElementById("authCard").classList.remove("hidden");
- document.getElementById("mobile").value="";
- document.getElementById("password").value="";
+await db.auth.signOut();
+currentUser=null;
+hideAll();
+document.getElementById("authCard").classList.remove("hidden");
+document.getElementById("mobile").value="";
+document.getElementById("password").value="";
 }
 
 db.auth.getSession().then(async({data})=>{
- if(data.session){
-  await loadCustomer(data.session.user);
- }
+if(data.session){
+await loadCustomer(data.session.user);
+}
 });
 </script>
 
