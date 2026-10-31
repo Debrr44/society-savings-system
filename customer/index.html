@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Society Savings</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f2f5f7;font-family:Arial,sans-serif;color:#172b35}
+header{background:#063044;color:white;padding:22px;display:flex;justify-content:space-between;align-items:center}
+header h2{margin:0}
+header p{margin:5px 0 0;color:#c7d8df;font-size:13px}
+.card{background:white;margin:16px;padding:20px;border-radius:18px;box-shadow:0 4px 20px #0000000b}
+.hidden{display:none!important}
+label{font-size:14px;font-weight:bold}
+input,select{width:100%;padding:14px;margin:8px 0 15px;border:1px solid #d9e1e5;border-radius:10px;font-size:15px;background:white}
+button{border:0;border-radius:11px;padding:14px;background:#087c65;color:white;font-size:15px;font-weight:bold;cursor:pointer}
+button:disabled{opacity:.5}
+.full{width:100%;margin:7px 0}
+.secondary{background:#e7f2ef;color:#087c65}
+.status{background:#eaf5f1;padding:15px;border-radius:12px;line-height:1.6}
+.balance-card{background:linear-gradient(135deg,#063044,#087c65);color:white;padding:25px;border-radius:20px;margin:16px}
+.balance-card small{color:#c8e5df}
+.balance-card h1{font-size:36px;margin:12px 0}
+.account-mini{font-size:13px;color:#d2e7e3}
+.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px}
+.action{background:white;border-radius:14px;padding:17px 5px;text-align:center;box-shadow:0 3px 12px #00000008}
+.action span{font-size:25px;display:block;margin-bottom:8px}
+.action button{background:transparent;color:#087c65;padding:5px;font-size:13px}
+.info-row{display:flex;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px solid #eee;font-size:14px}
+.info-row strong{text-align:right;word-break:break-word}
+.menu{position:absolute;right:12px;top:65px;background:white;width:210px;border-radius:13px;box-shadow:0 5px 25px #0003;z-index:10;overflow:hidden}
+.menu button{display:block;width:100%;text-align:left;background:white;color:#172b35;border-radius:0;border-bottom:1px solid #eee}
+.tick{font-size:55px;color:#07966d;text-align:center}
+</style>
+</head>
+
+<body>
+
+<header>
+<div>
+<h2>Society Savings</h2>
+<p>Your society account portal</p>
+</div>
+<button id="menuBtn" onclick="toggleMenu()">⋮</button>
+</header>
+
+<!-- LOGIN -->
+
+<div class="card" id="authCard">
+<h2 id="heading">Member Login</h2>
+<p id="description">Sign in using your registered mobile number.</p>
+
+<div id="registerFields" class="hidden">
+<label>Full Name</label>
+<input id="name" placeholder="Enter full name">
+</div>
+
+<label>Mobile Number</label>
+<input id="mobile" type="tel" maxlength="10">
+
+<label>Password</label>
+<input id="password" type="password">
+
+<button class="full" id="submitBtn" onclick="submitForm()">Sign In</button>
+<button class="full secondary" id="switchBtn" onclick="toggleMode()">Create Account</button>
+<p id="message"></p>
+</div>
+
+<!-- KYC FORM -->
+
+<div class="card hidden" id="kycCard">
+<h2>Complete Your KYC</h2>
+<p>Please enter your personal information accurately.</p>
+
+<form id="kycForm">
+
+<label>Identity Document</label>
+<select id="documentType" required>
+<option value="">Choose document</option>
+<option value="AADHAAR">Aadhaar Card</option>
+<option value="PAN">PAN Card</option>
+<option value="VOTER_ID">Voter ID</option>
+<option value="DRIVING_LICENCE">Driving Licence</option>
+</select>
+
+<label>Document Number</label>
+<input id="documentNumber" required>
+
+<label>Date of Birth</label>
+<input id="dob" type="date" required>
+
+<label>Full Legal Name</label>
+<input id="fullName" required>
+
+<label>Father's Name</label>
+<input id="fatherName" required>
+
+<label>Mother's Name</label>
+<input id="motherName" required>
+
+<label>Annual Income (₹)</label>
+<input id="income" type="number" min="0" required>
+
+<label>Occupation</label>
+<select id="occupation" required>
+<option value="">Select occupation</option>
+<option>Business</option>
+<option>Private Employee</option>
+<option>Government Employee</option>
+<option>Self Employed</option>
+<option>Student</option>
+<option>Homemaker</option>
+<option>Retired</option>
+<option>Other</option>
+</select><div class="section">
+<h3>Residential Address</h3>
+
+<label>House / Flat Number</label>
+<input id="house" required>
+
+<label>Street / Locality</label>
+<input id="locality" required>
+
+<label>Village / City</label>
+<input id="city" required>
+
+<label>Post Office</label>
+<input id="postOffice" required>
+
+<label>Police Station</label>
+<input id="policeStation" required>
+
+<label>District</label>
+<input id="district" required>
+
+<label>State</label>
+<input id="state" required>
+
+<label>PIN Code</label>
+<input id="pinCode" maxlength="6" pattern="[0-9]{6}" required>
+</div>
+
+<p style="font-size:12px;color:#667">
+By submitting, you confirm that the information provided is accurate.
+</p>
+
+<button class="full" type="submit" id="kycSubmit">Submit KYC</button>
+<button class="full secondary" type="button" onclick="logout()">Sign Out</button>
+</form>
+<p id="kycMessage"></p>
+</div>
+
+<!-- PENDING KYC -->
+
+<div class="card hidden" id="pendingCard">
+<h2>KYC Application Submitted</h2>
+<div class="status">
+Your application is awaiting admin verification.
+<br><br>
+<strong>Status: UNDER REVIEW</strong>
+</div>
+<button class="full" onclick="logout()">Sign Out</button>
+</div>
+
+<!-- REJECTED KYC -->
+
+<div class="card hidden" id="rejectedCard">
+<h2>KYC Application Rejected</h2>
+<div class="status">
+<strong>Status: REJECTED</strong>
+<p id="rejectionReason"></p>
+</div>
+<button class="full" onclick="logout()">Sign Out</button>
+</div>
+
+<!-- CUSTOMER DASHBOARD -->
+
+<div id="dashboard" class="hidden">
+
+<div class="balance-card">
+<small>AVAILABLE BALANCE</small>
+<h1 id="balance">₹0.00</h1>
+<div class="account-mini">
+Account No: <span id="miniAccount">Loading...</span>
+</div>
+</div>
+
+<div class="card" style="margin-top:-5px">
+<button class="full" onclick="openPage('addMoneyPage')">
+＋ Add Money
+</button>
+</div>
+
+<div class="actions">
+
+<div class="action">
+<span>↗</span>
+<button onclick="comingSoon()">Send Money</button>
+</div>
+
+<div class="action">
+<span>↔</span>
+<button onclick="openPage('historyPage')">History</button>
+</div>
+
+<div class="action">
+<span>⋮</span>
+<button onclick="toggleMenu()">More</button>
+</div>
+
+</div>
+
+<div class="menu hidden" id="mainMenu">
+<button onclick="openPage('accountPage')">My Account</button>
+<button onclick="openPage('kycStatusPage')">KYC Status</button>
+<button onclick="openPage('historyPage')">Transaction History</button>
+<button onclick="openPage('contactPage')">Contact Us</button>
+<button onclick="logout()">Sign Out</button>
+</div>
+
+</div><!-- MY ACCOUNT PAGE -->
+
+<div id="accountPage" class="hidden">
+<div class="card">
+<h2>My Account</h2>
+
+<div class="info-row">
+<span>Account Holder</span>
+<strong id="accountHolder">Loading...</strong>
+</div>
+
+<div class="info-row">
+<span>Account Number</span>
+<strong id="accountNumber">Loading...</strong>
+</div>
+
+<div class="info-row">
+<span>Branch Name</span>
+<strong id="branchName">Not available</strong>
+</div>
+
+<div class="info-row">
+<span>Branch Code</span>
+<strong id="branchCode">Loading...</strong>
+</div>
+
+<div class="info-row">
+<span>Account Status</span>
+<strong id="accountStatus">Loading...</strong>
+</div>
+
+<div class="info-row">
+<span>Available Balance</span>
+<strong id="accountBalance">₹0.00</strong>
+</div>
+
+<div class="info-row">
+<span>Lien Amount</span>
+<strong id="lienAmount">₹0.00</strong>
+</div>
+
+<button class="full secondary" onclick="copyAccount()">Copy Account Number</button>
+<button class="full" onclick="goDashboard()">Back to Dashboard</button>
+</div>
+</div>
+
+<!-- KYC STATUS PAGE -->
+
+<div id="kycStatusPage" class="hidden">
+<div class="card">
+<div class="tick">✓</div>
+<h2>KYC Verified</h2>
+
+<div class="status">
+<strong>VERIFICATION SUCCESSFUL</strong>
+<p>Your KYC application has been approved.</p>
+</div>
+
+<div class="info-row">
+<span>Application ID</span>
+<strong id="kycApplicationId">Loading...</strong>
+</div>
+
+<div class="info-row">
+<span>Document Type</span>
+<strong id="kycDocumentType">Loading...</strong>
+</div>
+
+<button class="full" onclick="goDashboard()">Back to Dashboard</button>
+</div>
+</div><!-- ADD MONEY PAGE -->
+
+<div id="addMoneyPage" class="hidden">
+<div class="card">
+
+<h2>Add Money</h2>
+<p>Enter the amount you want to deposit.</p>
+
+<label>Deposit Amount (₹)</label>
+<input id="depositAmount" type="number" min="1" placeholder="Enter amount">
+
+<button class="full" onclick="showPaymentDetails()">Continue</button>
+
+<div id="paymentDetails" class="hidden">
+<div class="status">
+<strong>Society Payment UPI ID</strong>
+<h3 id="upiDisplay">milldebniore-1@oksbi</h3>
+
+<button class="secondary full" onclick="copyUPI()">Copy UPI ID</button>
+
+<p>Pay the exact amount using your UPI application.</p>
+<p>After payment, return here to enter your UTR number.</p>
+</div>
+
+<button class="full" onclick="showUTRForm()">Confirm Pay</button>
+</div>
+
+<div id="utrForm" class="hidden">
+<h3>Confirm Your Payment</h3>
+
+<label>UTR / Transaction ID</label>
+<input id="utrNumber" placeholder="Enter UTR number">
+
+<p id="depositMessage"></p>
+
+<button class="full" onclick="submitDeposit()">Submit Request</button>
+</div>
+
+<p style="font-size:12px;color:#777">
+Payment submission will be activated after secure database integration. This screen does not confirm payment.
+</p>
+
+<button class="full secondary" onclick="goDashboard()">Back to Dashboard</button>
+</div>
+</div>
+
+<!-- TRANSACTION HISTORY -->
+
+<div id="historyPage" class="hidden">
+<div class="card">
+<h2>Transaction History</h2>
+
+<div class="status">
+Transaction history will appear here once the transaction system is connected.
+</div>
+
+<button class="full" onclick="goDashboard()">Back to Dashboard</button>
+</div>
+</div>
+
+<!-- CONTACT US -->
+
+<div id="contactPage" class="hidden">
+<div class="card">
+<h2>Contact Us</h2>
+
+<p>For account-related assistance, contact your society administrator.</p>
+
+<div class="status">
+<strong>Society Savings Support</strong>
+<p>Contact details will be updated here.</p>
+</div>
+
+<button class="full" onclick="goDashboard()">Back to Dashboard</button>
+</div>
+</div>
+<script>
+const SUPABASE_URL="https://mmgvfxqqnzqokeuojadp.supabase.co";
+const SUPABASE_KEY="sb_publishable_bm16oFdCJ4oCyR4u8EaXJA_8GK4qXc8";
+
+const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const FUNCTION_URL=SUPABASE_URL+"/functions/v1/customer-register";
+
+let registering=false;
+let currentUser=null;
+let currentAccount=null;
+let currentKyc=null;
+
+const pageIds=[
+"authCard","kycCard","pendingCard","rejectedCard",
+"dashboard","accountPage","kycStatusPage",
+"addMoneyPage","historyPage","contactPage"
+];
+
+function hideAll(){
+pageIds.forEach(id=>{
+const el=document.getElementById(id);
+if(el)el.classList.add("hidden");
+});
+document.getElementById("mainMenu").classList.add("hidden");
+}
+
+function toggleMode(){
+registering=!registering;
+
+document.getElementById("registerFields").classList.toggle("hidden",!registering);
+document.getElementById("heading").textContent=registering?"Create Account":"Member Login";
+document.getElementById("description").textContent=registering?"Register your Society Savings account.":"Sign in using your registered mobile number.";
+document.getElementById("submitBtn").textContent=registering?"Register Account":"Sign In";
+document.getElementById("switchBtn").textContent=registering?"Back to Login":"Create Account";
+document.getElementById("message").textContent="";
+}
+
+async function submitForm(){
+
+const msg=document.getElementById("message");
+const mobile=document.getElementById("mobile").value.trim();
+const password=document.getElementById("password").value;
+const full_name=document.getElementById("name").value.trim();
+const btn=document.getElementById("submitBtn");
+
+if(!/^[0-9]{10}$/.test(mobile)){
+msg.textContent="Enter a valid 10-digit mobile number.";
+return;
+}
+
+if(password.length<10){
+msg.textContent="Password must contain at least 10 characters.";
+return;
+}
+
+btn.disabled=true;
+msg.textContent="Please wait...";
+
+try{
+const email=mobile+"@customers.societysavings.invalid";
+
+if(registering){
+
+if(!full_name)throw new Error("Enter your full name.");
+
+const response=await fetch(FUNCTION_URL,{
+method:"POST",
+headers:{
+"Content-Type":"application/json",
+"apikey":SUPABASE_KEY
+},
+body:JSON.stringify({full_name,mobile,password})
+});
+
+const result=await response.json();
+
+if(!response.ok||!result.success)
+throw new Error(result.error||"Registration failed.");
+
+registering=false;
+document.getElementById("registerFields").classList.add("hidden");
+document.getElementById("heading").textContent="Member Login";
+document.getElementById("description").textContent="Sign in using your registered mobile number.";
+document.getElementById("submitBtn").textContent="Sign In";
+document.getElementById("switchBtn").textContent="Create Account";
+msg.textContent="Registration successful. Please sign in.";
+
+}else{
+
+const {data,error}=await db.auth.signInWithPassword({email,password});
+
+if(error)throw error;
+
+await loadCustomer(data.user);
+}
+
+}catch(error){
+msg.textContent=error.message||"Something went wrong.";
+}finally{
+btn.disabled=false;
+}
+}
+
+async function loadCustomer(user){
+
+currentUser=user;
+hideAll();
+
+const {data:kyc,error}=await db
+.from("kyc_submissions")
+.select("id,status,rejection_reason,document_type")
+.eq("customer_id",user.id)
+.maybeSingle();
+
+if(error){
+document.getElementById("authCard").classList.remove("hidden");
+document.getElementById("message").textContent="Unable to load KYC status: "+error.message;
+return;
+}
+
+currentKyc=kyc;
+
+if(!kyc){
+showKycForm();
+return;
+}
+
+if(kyc.status==="APPROVED"){
+await showVerified();
+}else if(kyc.status==="REJECTED"){
+document.getElementById("rejectedCard").classList.remove("hidden");
+document.getElementById("rejectionReason").textContent=kyc.rejection_reason||"Please contact the administrator.";
+}else{
+document.getElementById("pendingCard").classList.remove("hidden");
+}
+}
+
+function showKycForm(){
+hideAll();
+document.getElementById("kycCard").classList.remove("hidden");
+}
+
+document.getElementById("kycForm").addEventListener("submit",async function(e){
+
+e.preventDefault();
+
+if(!currentUser){
+alert("Please sign in again.");
+return;
+}
+
+const btn=document.getElementById("kycSubmit");
+const msg=document.getElementById("kycMessage");
+
+btn.disabled=true;
+msg.textContent="Submitting application...";
+
+try{
+
+const application={
+customer_id:currentUser.id,
+document_type:document.getElementById("documentType").value,
+document_number:document.getElementById("documentNumber").value.trim(),
+date_of_birth:document.getElementById("dob").value,
+full_name:document.getElementById("fullName").value.trim(),
+father_name:document.getElementById("fatherName").value.trim(),
+mother_name:document.getElementById("motherName").value.trim(),
+annual_income:Number(document.getElementById("income").value),
+occupation:document.getElementById("occupation").value,
+house_address:document.getElementById("house").value.trim(),
+locality:document.getElementById("locality").value.trim(),
+city:document.getElementById("city").value.trim(),
+post_office:document.getElementById("postOffice").value.trim(),
+police_station:document.getElementById("policeStation").value.trim(),
+district:document.getElementById("district").value.trim(),
+state:document.getElementById("state").value.trim(),
+pin_code:document.getElementById("pinCode").value,
+status:"PENDING"
+};
+
+const {error}=await db
+.from("kyc_submissions")
+.insert(application);
+
+if(error)throw error;
+
+hideAll();
+document.getElementById("pendingCard").classList.remove("hidden");
+
+}catch(error){
+msg.textContent=error.message||"KYC submission failed.";
+}finally{
+btn.disabled=false;
+}
+});
+
+async function getCustomerId(){
+
+const {data,error}=await db.rpc("current_customer_id");
+
+if(error)throw error;
+if(!data)throw new Error("Customer account mapping not found.");
+
+return data;
+}
+
+async function showVerified(){
+
+hideAll();
+
+const {data:customerId,error:customerError}=await db.rpc("current_customer_id");
+
+if(customerError||!customerId){
+document.getElementById("authCard").classList.remove("hidden");
+document.getElementById("message").textContent="Unable to identify your customer account.";
+return;
+}
+
+const {data:account,error}=await db
+.from("accounts")
+.select("account_no,branch_code,status,balance_paise,lien_paise,account_blocked,debit_frozen,customers(full_name)")
+.eq("customer_id",customerId)
+.maybeSingle();
+
+if(error||!account){
+document.getElementById("authCard").classList.remove("hidden");
+document.getElementById("message").textContent="Account details unavailable. Please contact the administrator.";
+return;
+}
+
+currentAccount=account;
+
+const balance=Number(account.balance_paise||0);
+const lien=Number(account.lien_paise||0);
+const available=Math.max(0,balance-lien);
+
+document.getElementById("balance").textContent=formatMoney(available);
+document.getElementById("miniAccount").textContent=account.account_no||"Not available";
+
+document.getElementById("accountHolder").textContent=account.customers?.full_name||"Not available";
+document.getElementById("accountNumber").textContent=account.account_no||"Not available";
+document.getElementById("branchName").textContent="Not configured";
+document.getElementById("branchCode").textContent=account.branch_code||"Not available";
+document.getElementById("accountStatus").textContent=account.status||"Not available";
+document.getElementById("accountBalance").textContent=formatMoney(available);
+document.getElementById("lienAmount").textContent=formatMoney(lien);
+
+document.getElementById("kycApplicationId").textContent=currentKyc?.id||"Not available";
+document.getElementById("kycDocumentType").textContent=currentKyc?.document_type||"Not available";
+
+document.getElementById("dashboard").classList.remove("hidden");
+}
+
+function formatMoney(paise){
+return (Number(paise||0)/100).toLocaleString("en-IN",{
+style:"currency",
+currency:"INR"
+});
+}
+
+function openPage(id){
+hideAll();
+
+const page=document.getElementById(id);
+if(page)page.classList.remove("hidden");
+
+window.scrollTo(0,0);
+}
+
+function goDashboard(){
+hideAll();
+document.getElementById("dashboard").classList.remove("hidden");
+window.scrollTo(0,0);
+}
+
+function toggleMenu(){
+document.getElementById("mainMenu").classList.toggle("hidden");
+}
+
+function comingSoon(){
+alert("This feature will be available in a future update.");
+}
+
+async function copyAccount(){
+if(!currentAccount?.account_no)return;
+
+try{
+await navigator.clipboard.writeText(currentAccount.account_no);
+alert("Account number copied.");
+}catch(error){
+alert("Unable to copy. Please copy the account number manually.");
+}
+}
+
+async function copyUPI(){
+try{
+await navigator.clipboard.writeText("milldebniore-1@oksbi");
+alert("UPI ID copied.");
+}catch(error){
+alert("UPI ID: milldebniore-1@oksbi");
+}
+}
+
+function showPaymentDetails(){
+const amount=Number(document.getElementById("depositAmount").value);
+
+if(!Number.isFinite(amount)||amount<=0){
+alert("Enter a valid deposit amount.");
+return;
+}
+
+document.getElementById("paymentDetails").classList.remove("hidden");
+document.getElementById("utrForm").classList.add("hidden");
+}
+
+function showUTRForm(){
+document.getElementById("utrForm").classList.remove("hidden");
+}
+
+function submitDeposit(){
+document.getElementById("depositMessage").textContent=
+"Deposit requests are not active yet. Please do not treat this screen as a payment confirmation.";
+}
+
+async function logout(){
+
+await db.auth.signOut();
+
+currentUser=null;
+currentAccount=null;
+currentKyc=null;
+
+hideAll();
+document.getElementById("authCard").classList.remove("hidden");
+
+document.getElementById("mobile").value="";
+document.getElementById("password").value="";
+document.getElementById("message").textContent="";
+}
+
+db.auth.getSession().then(async({data})=>{
+if(data.session){
+await loadCustomer(data.session.user);
+}else{
+hideAll();
+document.getElementById("authCard").classList.remove("hidden");
+}
+});
+</script></body>
+</html>
