@@ -259,7 +259,47 @@ td{padding:14px 10px;border-bottom:1px solid #f0f2f3}
 </div>
 </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+#kycModalBackdrop{
+display:none;
+position:fixed;
+inset:0;
+background:#0009;
+z-index:9999;
+padding:15px;
+overflow:auto;
+}
+#kycModalBackdrop.open{
+display:flex;
+align-items:center;
+justify-content:center;
+}
+#kycModalBox{
+background:white;
+width:100%;
+max-width:650px;
+max-height:90vh;
+overflow:auto;
+padding:22px;
+border-radius:15px;
+}
+.kyc-detail-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px;
+}
+@media(max-width:500px){
+.kyc-detail-grid{grid-template-columns:1fr}
+}
+</style>
+
+<div id="kycModalBackdrop">
+<div id="kycModalBox">
+<button id="closeKycModal" class="action">Close ✕</button>
+<div id="kycModalBody">Loading details...</div>
+</div>
+</div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 'use strict';
 
