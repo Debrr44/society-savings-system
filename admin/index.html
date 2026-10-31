@@ -1,41 +1,44 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#091b2c">
-<title>Society Savings | Admin Control Centre</title>
+<title>Society Savings | Admin Control Centre V3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--navy:#091b2c;--navy2:#102c40;--green:#087d60;--gold:#d6b779;--bg:#f3f5f7;--white:#fff;--muted:#83909c;--line:#e8ecef;--red:#c64c4c;--shadow:0 8px 30px #102c4010}
+:root{--navy:#091b2c;--navy2:#102c40;--green:#087d60;--gold:#d6b779;--bg:#f3f5f7;--white:#fff;--muted:#83909c;--line:#e8ecef;--red:#b42318;--shadow:0 8px 30px #102c4010}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);font-family:'DM Sans',sans-serif;color:#263746}
 button,input,select{font:inherit}
 button{cursor:pointer}
-.sidebar{position:fixed;inset:0 auto 0 0;width:250px;background:var(--navy);color:white;padding:25px 16px;overflow:auto;z-index:5}
+.sidebar{position:fixed;inset:0 auto 0 0;width:250px;background:var(--navy);color:#fff;padding:25px 16px;overflow:auto;z-index:5}
 .brand{display:flex;align-items:center;gap:11px;padding:4px 8px 28px;font:800 15px Manrope;letter-spacing:1px}
 .mark{height:38px;width:38px;border:1px solid var(--gold);border-radius:11px;display:grid;place-items:center;color:var(--gold);font-size:20px}
 .brand span:last-child{color:var(--gold)}
 .group{font-size:10px;letter-spacing:2px;color:#78909e;padding:17px 12px 9px;font-weight:700}
 .nav{display:flex;align-items:center;gap:12px;width:100%;padding:12px;border:0;border-radius:9px;background:transparent;color:#bdcbd2;text-align:left;font-size:13px;margin:3px 0}
-.nav.active,.nav:hover{background:#17384b;color:white}
+.nav.active,.nav:hover{background:#17384b;color:#fff}
 .nav.active{border-left:3px solid var(--gold)}
 .nav i{font-style:normal;width:19px;font-size:16px;text-align:center}
 .sidebottom{border-top:1px solid #ffffff18;margin-top:25px;padding:18px 10px;color:#9aabb5;font-size:11px;line-height:1.8}
 .main{margin-left:250px;min-height:100vh}
-.topbar{height:72px;background:white;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 30px;position:sticky;top:0;z-index:3}
+.topbar{height:72px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 30px;position:sticky;top:0;z-index:3}
 .topbar h2{font:700 16px Manrope;margin:0;color:var(--navy)}
 .adminuser{font-size:12px;color:#596b77;display:flex;align-items:center;gap:10px}
 .avatar{height:35px;width:35px;border-radius:50%;background:#e1f1eb;color:var(--green);display:grid;place-items:center;font-weight:800}
 .content{padding:28px;max-width:1400px;margin:auto}
-.page{display:none}.page.active{display:block}
+.page{display:none}
+.page.active{display:block}
 .heading{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:22px;flex-wrap:wrap}
 .heading h1{font:800 25px Manrope;color:var(--navy);margin:0}
 .heading p{font-size:12px;color:var(--muted);margin:6px 0 0}
 .badge{background:#fff4dc;color:#88651f;padding:7px 11px;border-radius:20px;font-size:10px;font-weight:700}
 .banner{background:#fff4df;border:1px solid #f0dfbd;color:#76551d;padding:13px 16px;border-radius:10px;font-size:12px;line-height:1.6;margin-bottom:20px}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-bottom:20px}
-.stat,.panel{background:white;border:1px solid var(--line);border-radius:13px;padding:19px;box-shadow:var(--shadow)}
+.stat,.panel{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 10px 32px #102c4012;transition:transform .18s ease,box-shadow .18s ease}
+.stat:hover,.panel:hover{transform:translateY(-2px);box-shadow:0 14px 36px #102c4019}
 .stat small{font-size:11px;color:var(--muted)}
 .stat strong{display:block;font:800 25px Manrope;color:var(--navy);margin:10px 0 5px}
 .stat span{font-size:10px;color:var(--green)}
@@ -48,325 +51,608 @@ td{padding:14px 10px;border-bottom:1px solid #f0f2f3}
 .status{padding:5px 9px;border-radius:20px;font-size:10px;font-weight:700;background:#e4f5ed;color:#087d60}
 .status.pending{background:#fff2d9;color:#9b711f}
 .status.blocked{background:#fde8e8;color:#b33e3e}
-.action{border:1px solid var(--line);background:white;color:var(--navy);padding:8px 11px;border-radius:8px;font-size:11px;font-weight:600}
-.primary{background:var(--green);color:white;border:0;padding:10px 15px;border-radius:8px;font-size:12px;font-weight:700}
+.action{border:1px solid var(--line);background:#fff;color:var(--navy);padding:8px 11px;border-radius:8px;font-size:11px;font-weight:600}
+.primary{background:linear-gradient(135deg,#087d60,#0b9873);color:#fff;border:0;padding:10px 15px;border-radius:9px;font-size:12px;font-weight:700;box-shadow:0 5px 14px #087d6024}
+.primary:disabled,.action:disabled{opacity:.5;cursor:not-allowed}
 .danger{background:#fff0f0;color:#b33e3e;border:1px solid #f4d4d4}
 .search{width:100%;max-width:350px;height:40px;border:1px solid var(--line);border-radius:8px;padding:0 12px;outline:none}
 .tools{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
 .formgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}
 .field label{display:block;font-size:11px;font-weight:700;margin-bottom:7px}
-.field input,.field select{width:100%;height:42px;border:1px solid var(--line);border-radius:8px;padding:0 11px;background:white}
+.field input,.field select{width:100%;height:42px;border:1px solid var(--line);border-radius:8px;padding:0 11px;background:#fff}
 .checkrow{display:flex;align-items:center;gap:10px;padding:13px 0;border-bottom:1px solid var(--line);font-size:12px}
-.checkrow input{accent-color:var(--green)}
 .empty{padding:28px;text-align:center;border:1px dashed #d9e0e3;border-radius:10px;color:var(--muted);font-size:12px}
 .mobilemenu{display:none;background:none;border:0;font-size:22px}
-@media(max-width:900px){.sidebar{width:220px}.main{margin-left:220px}.stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}}
-@media(max-width:650px){.sidebar{display:none;width:250px}.sidebar.open{display:block}.main{margin-left:0}.mobilemenu{display:block}.topbar{padding:0 15px}.content{padding:18px 13px}.stats{gap:9px}.stat{padding:13px}.stat strong{font-size:21px}.formgrid{grid-template-columns:1fr}}
+.muted{color:var(--muted);font-size:11px}
+.notice{padding:12px;border-radius:9px;background:#eef5f8;color:#365568;font-size:12px;margin:12px 0}
+.loginwrap{max-width:390px;margin:10vh auto;padding:28px;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
+.loginwrap h1{font:800 22px Manrope;color:var(--navy);margin:0 0 6px}
+.loginwrap p{font-size:12px;color:var(--muted)}
+.loginwrap input{width:100%;height:44px;border:1px solid var(--line);border-radius:8px;padding:0 12px;margin:8px 0}
+.loginwrap button{width:100%;margin-top:10px}
+.error{color:var(--red);font-size:12px;min-height:18px}
+@media(max-width:900px){
+.sidebar{width:220px}
+.main{margin-left:220px}
+.stats{grid-template-columns:repeat(2,1fr)}
+.grid{grid-template-columns:1fr}
+}
+@media(max-width:650px){
+.sidebar{display:none;width:250px}
+.sidebar.open{display:block}
+.main{margin-left:0}
+.mobilemenu{display:block}
+.topbar{padding:0 15px}
+.content{padding:18px 13px}
+.stats{gap:9px}
+.stat{padding:13px}
+.stat strong{font-size:21px}
+.formgrid{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
 
+<div id="loginScreen" class="loginwrap">
+<h1>Society Savings</h1>
+<p>Administrator sign in</p>
+<input id="adminEmail" type="email" autocomplete="username" placeholder="Admin email">
+<input id="adminPassword" type="password" autocomplete="current-password" placeholder="Password">
+<button class="primary" id="adminLogin">Sign in</button>
+<div id="loginMessage" class="error" role="alert"></div>
+<p class="muted">Access is limited to active administrator accounts.</p>
+</div>
+
+<div id="app" hidden>
 <aside class="sidebar" id="sidebar">
 <div class="brand"><div class="mark">✦</div><div>SOCIETY<br><span>SAVINGS</span></div></div>
-
 <div class="group">OVERVIEW</div>
-<button class="nav active" data-page="dashboard"><i>▦</i> Dashboard</button>
-
+<button class="nav active" data-page="dashboard"><i>▦</i>Dashboard</button>
 <div class="group">CUSTOMER OPERATIONS</div>
-<button class="nav" data-page="customers"><i>♙</i> Customers</button>
-<button class="nav" data-page="accounts"><i>▣</i> Account Management</button>
-<button class="nav" data-page="kyc"><i>✓</i> KYC Verification</button>
-<button class="nav" data-page="kycconfig"><i>⚙</i> KYC Configuration</button>
-
+<button class="nav" data-page="customers"><i>♙</i>Customers</button>
+<button class="nav" data-page="kyc"><i>✓</i>KYC Verification</button>
 <div class="group">FINANCIAL OPERATIONS</div>
-<button class="nav" data-page="transfers"><i>⇄</i> Money Transfers</button>
-<button class="nav" data-page="transactions"><i>▤</i> Transactions</button>
-<button class="nav" data-page="lien"><i>◈</i> Lien Management</button>
-
+<button class="nav" data-page="accounts"><i>▣</i>Account Management</button>
+<button class="nav" data-page="transactions"><i>▤</i>Transactions</button>
+<button class="nav" data-page="transfers"><i>⇄</i>Money Transfers</button>
+<button class="nav" data-page="lien"><i>◈</i>Lien Management</button>
 <div class="group">ADMINISTRATION</div>
-<button class="nav" data-page="staff"><i>♧</i> Staff & Permissions</button>
-<button class="nav" data-page="audit"><i>◷</i> Audit Logs</button>
-<button class="nav" data-page="reports"><i>▥</i> Reports</button>
-<button class="nav" data-page="settings"><i>⚙</i> System Settings</button>
-
-<div class="sidebottom">ADMIN CONTROL CENTRE<br>Society Savings Management<br>Version 1.0 · Preview</div>
+<button class="nav" data-page="staff"><i>♧</i>Staff & Permissions</button>
+<button class="nav" data-page="audit"><i>◷</i>Audit Logs</button>
+<button class="nav" data-page="reports"><i>▥</i>Reports</button>
+<button class="nav" data-page="settings"><i>⚙</i>System Settings</button>
+<div class="sidebottom">ADMIN CONTROL CENTRE<br>Society Savings Management<br>Version 3.0 · Paginated admin interface</div>
 </aside>
 
 <div class="main">
 <header class="topbar">
-<div style="display:flex;align-items:center;gap:12px"><button class="mobilemenu" id="menu">☰</button><h2 id="topTitle">Dashboard</h2></div>
-<div class="adminuser"><span>Administrator</span><div class="avatar">SA</div></div>
+<div style="display:flex;align-items:center;gap:12px">
+<button class="mobilemenu" id="menu" aria-label="Open menu">☰</button>
+<h2 id="topTitle">Dashboard</h2>
+</div>
+<div class="adminuser">
+<span id="adminLabel">Administrator</span>
+<div class="avatar">SA</div>
+<button class="action" id="logout">Sign out</button>
+</div>
 </header>
 
 <div class="content">
-<div class="banner"><b>PREVIEW MODE:</b> This is an interface prototype. No live customer records, financial balances, permissions or transactions are connected. Do not use it to perform real financial operations.</div>
+<div class="banner"><b>IMPORTANT:</b> This is an admin interface scaffold, not a licensed banking core. Real account freezes, transfers, liens, balances and financial postings are intentionally not enabled. Enforce authorization, audit logging and validation on the server—not only in this page.</div>
 
 <section class="page active" id="dashboard">
-<div class="heading"><div><h1>Good day, Administrator</h1><p>Society Savings · Management overview</p></div><span class="badge">● SYSTEM PREVIEW</span></div>
+<div class="heading">
+<div><h1>Good day, Administrator</h1><p>Society Savings · Management overview</p></div>
+<span class="badge">● CONNECTED VIEW</span>
+</div>
 <div class="stats">
-<div class="stat"><small>Total Customers</small><strong>—</strong><span>Awaiting database connection</span></div>
-<div class="stat"><small>Total Deposits</small><strong>₹ —</strong><span>Live data not connected</span></div>
-<div class="stat"><small>Pending KYC</small><strong>—</strong><span>Awaiting submissions</span></div>
-<div class="stat"><small>Pending Transfers</small><strong>—</strong><span>Awaiting ledger integration</span></div>
+<div class="stat"><small>Total Customers</small><strong id="customerCount">—</strong><span>Database count</span></div>
+<div class="stat"><small>KYC Applications</small><strong id="kycCount">—</strong><span>Database count</span></div>
+<div class="stat"><small>Pending KYC</small><strong id="pendingCount">—</strong><span>Requires review</span></div>
+<div class="stat"><small>Financial Ledger</small><strong>—</strong><span>Not integrated</span></div>
 </div>
 <div class="grid">
-<div class="panel"><h3>Recent Customer Activity</h3><div class="empty">Customer activity will appear here after backend integration.</div></div>
-<div class="panel"><h3>System Overview</h3><div class="checkrow">Customer portal <span class="status">Created</span></div><div class="checkrow">Admin interface <span class="status">Preview</span></div><div class="checkrow">Supabase connection <span class="status pending">Not connected</span></div><div class="checkrow">Financial ledger <span class="status pending">Not connected</span></div></div>
+<div class="panel"><h3>Recent Customer Activity</h3><div id="recentActivity" class="empty">Loading customer records…</div></div>
+<div class="panel">
+<h3>System status</h3>
+<div class="checkrow">Admin authentication <span class="status">Enabled</span></div>
+<div class="checkrow">Customer directory <span class="status pending" id="customerState">Checking</span></div>
+<div class="checkrow">KYC review <span class="status pending" id="kycState">Checking</span></div>
+<div class="checkrow">Financial ledger <span class="status blocked">Not connected</span></div>
+</div>
 </div>
 </section>
 
 <section class="page" id="customers">
-<div class="heading"><div><h1>Customer Management</h1><p>Customer profiles and account lookup</p></div><button class="primary" onclick="alert('Customer creation will be enabled after secure backend integration.')">+ Add Customer</button></div>
-<div class="panel"><div class="tools"><input class="search" placeholder="Search by name, mobile or account number" oninput="filterRows(this,'customerTable')"></div><div class="tablewrap"><table id="customerTable"><thead><tr><th>Customer</th><th>Mobile</th><th>Account</th><th>KYC</th><th>Status</th></tr></thead><tbody><tr><td colspan="5">No live customer records connected.</td></tr></tbody></table></div></div>
-</section>
-
-<section class="page" id="accounts">
-<div class="heading"><div><h1>Account Management</h1><p>Account status and restriction controls</p></div></div>
-<div class="panel"><h3>Account lookup</h3><div class="tools"><input class="search" placeholder="Enter account number or mobile"></div><div class="formgrid"><div class="field"><label>Account action</label><select><option>Select action</option><option>Block account</option><option>Unblock account</option><option>Freeze debit</option><option>Unfreeze debit</option><option>Request account closure</option></select></div><div class="field"><label>Reason / case reference</label><input placeholder="Mandatory reason"></div></div><p class="note">Actions will require server-side permission checks and audit logging before activation.</p></div>
+<div class="heading"><div><h1>Customer Management</h1><p>Customer profiles and account lookup</p></div></div>
+<div class="panel">
+<div class="tools"><input class="search" id="customerSearch" placeholder="Search name or mobile"></div>
+<div class="tablewrap">
+<table>
+<thead><tr><th>Customer</th><th>Mobile</th><th>KYC status</th></tr></thead>
+<tbody id="customerRows"><tr><td colspan="3">Loading…</td></tr></tbody>
+</table>
+</div>
+<div class="tools" style="justify-content:space-between;align-items:center;margin:16px 0 0">
+<span class="muted" id="customerPageInfo">Showing 0 records</span>
+<button class="action" id="customerLoadMore">Load more</button>
+</div>
+</div>
 </section>
 
 <section class="page" id="kyc">
-<div class="heading"><div><h1>KYC Verification</h1><p>Review customer identity submissions</p></div></div>
-<div class="panel"><div class="tools"><input class="search" placeholder="Search KYC submission"></div><div class="empty">No KYC submissions yet. Customer document review will appear here after private storage and backend integration.</div></div>
+<div class="heading">
+<div><h1>KYC Verification</h1><p>Review submitted identity applications</p></div>
+<button class="action" id="refreshKyc">Refresh applications</button>
+</div>
+<div class="notice">For privacy, this screen does not display full identity-document numbers or raw document files. Review documents only through an approved private document workflow.</div>
+<div class="panel">
+<div class="tools"><input class="search" id="kycSearch" placeholder="Search applicant or document type"></div>
+<div id="kycRows" class="empty">Loading applications…</div>
+<div class="tools" style="justify-content:space-between;align-items:center;margin:16px 0 0">
+<span class="muted" id="kycPageInfo">Showing 0 applications</span>
+<button class="action" id="kycLoadMore">Load more</button>
+</div>
+</div>
 </section>
 
-<section class="page" id="kycconfig">
-<div class="heading"><div><h1>KYC Configuration</h1><p>Configure which documents customers must submit</p></div></div>
-<div class="panel"><h3>Document requirements</h3>
-<div class="checkrow"><input type="checkbox" checked disabled> Identity proof <span class="badge">Example</span></div>
-<div class="checkrow"><input type="checkbox" checked disabled> Address proof <span class="badge">Example</span></div>
-<div class="checkrow"><input type="checkbox" checked disabled> Customer photograph <span class="badge">Example</span></div>
-<div class="checkrow"><input type="checkbox" disabled> PAN document <span class="badge">Optional example</span></div>
-<p style="font-size:11px;color:var(--muted)">These are illustrative settings only. Dynamic document configuration and customer upload requirements are not active yet.</p>
-<div class="formgrid"><div class="field"><label>New document name</label><input placeholder="e.g. Address proof"></div><div class="field"><label>Document category</label><select><option>Identity</option><option>Address</option><option>Photograph</option><option>Other</option></select></div></div><br><button class="primary" onclick="alert('Configuration saving will be enabled after backend integration.')">Save configuration (preview)</button>
+<section class="page" id="accounts">
+<div class="heading"><div><h1>Account Management</h1><p>Account status and restriction requests</p></div></div>
+<div class="panel">
+<div class="notice">Account block/unblock and debit-freeze controls are disabled until server-side authorization, maker-checker approval, reason capture and immutable audit logging are implemented.</div>
+<div class="empty">No account-control actions are available in this frontend.</div>
 </div>
+</section>
+
+<section class="page" id="transactions">
+<div class="heading"><div><h1>Transactions</h1><p>Ledger activity and references</p></div></div>
+<div class="panel"><div class="empty">A verified server-side ledger integration is required before transaction records can be displayed.</div></div>
 </section>
 
 <section class="page" id="transfers">
 <div class="heading"><div><h1>Money Transfers</h1><p>Internal account-to-account transfer monitoring</p></div></div>
-<div class="panel"><div class="banner">Transfers are not enabled. The eventual system will validate both accounts, account status, available balance, transfer limits and transaction PIN before posting an atomic ledger transaction.</div><div class="empty">No transfer records available.</div></div>
-</section>
-
-<section class="page" id="transactions">
-<div class="heading"><div><h1>Transaction Management</h1><p>Search internal ledger activity and references</p></div></div>
-<div class="panel"><div class="tools"><input class="search" placeholder="Search transaction ID or account number"></div><div class="empty">No transaction records connected.</div></div>
+<div class="panel">
+<div class="notice">Transfers are disabled. A production implementation needs server-side balance checks, limits, idempotency, transaction authorization and atomic ledger posting.</div>
+</div>
 </section>
 
 <section class="page" id="lien">
-<div class="heading"><div><h1>Lien Management</h1><p>Review and manage account lien requests</p></div></div>
-<div class="panel"><h3>New lien request</h3><div class="formgrid"><div class="field"><label>Account number</label><input placeholder="Enter account number"></div><div class="field"><label>Amount (₹)</label><input type="number" placeholder="Enter amount"></div><div class="field"><label>Case reference</label><input placeholder="Reference number"></div><div class="field"><label>Reason</label><input placeholder="Explain the reason"></div></div><br><button class="primary" onclick="alert('Lien controls require backend authorization and approval.')">Submit for authorized review</button></div>
+<div class="heading"><div><h1>Lien Management</h1><p>Review authorized lien requests</p></div></div>
+<div class="panel">
+<div class="notice">Lien creation and release are disabled until a legally authorized backend workflow and dual approval controls are available.</div>
+</div>
 </section>
 
 <section class="page" id="staff">
-<div class="heading"><div><h1>Staff & Permissions</h1><p>Role-based access management</p></div><button class="primary" onclick="alert('Staff invitations require secure authentication integration.')">+ Add Staff</button></div>
-<div class="panel"><h3>Available role templates</h3><div class="checkrow">Super Admin <span class="badge">Full permissions</span></div><div class="checkrow">Manager <span class="badge">Customer and account operations</span></div><div class="checkrow">Accountant <span class="badge">Financial records</span></div><div class="checkrow">KYC Officer <span class="badge">Document verification</span></div><div class="checkrow">Read-only Auditor <span class="badge">View only</span></div><p style="font-size:11px;color:var(--muted)">Role templates are examples. Actual permissions must be enforced by the backend.</p></div>
+<div class="heading"><div><h1>Staff & Permissions</h1><p>Role-based access management</p></div></div>
+<div class="panel">
+<h3>Suggested role model</h3>
+<div class="checkrow">Super Admin <span class="badge">Privileged</span></div>
+<div class="checkrow">Manager <span class="badge">Operations</span></div>
+<div class="checkrow">KYC Officer <span class="badge">KYC review</span></div>
+<div class="checkrow">Read-only Auditor <span class="badge">View only</span></div>
+<p class="muted">These labels are informational. Enforce granular permissions in database policies and trusted server functions.</p>
+</div>
 </section>
 
 <section class="page" id="audit">
-<div class="heading"><div><h1>Audit Logs</h1><p>Administrative action history and accountability</p></div></div>
-<div class="panel"><div class="empty">No audit events yet. Every sensitive action must record the operator, timestamp, reason and affected record.</div></div>
+<div class="heading"><div><h1>Audit Logs</h1><p>Administrative action history</p></div></div>
+<div class="panel">
+<div class="notice">Audit records must be written by trusted server-side functions and protected from client-side modification.</div>
+<div class="empty">Audit-log integration not configured.</div>
+</div>
 </section>
 
 <section class="page" id="reports">
-<div class="heading"><div><h1>Reports & Statements</h1><p>Operational and financial reporting</p></div></div>
-<div class="stats"><div class="stat"><small>Customer report</small><strong>—</strong><span>Not connected</span></div><div class="stat"><small>Ledger report</small><strong>—</strong><span>Not connected</span></div></div>
-<div class="panel"><div class="empty">Reports will be generated from verified backend records.</div></div>
+<div class="heading"><div><h1>Reports & Statements</h1><p>Operational reporting</p></div></div>
+<div class="panel"><div class="empty">Reports will be available after verified backend reporting integration.</div></div>
 </section>
 
 <section class="page" id="settings">
-<div class="heading"><div><h1>System Settings</h1><p>Institution configuration and operating controls</p></div></div>
-<div class="panel"><h3>Institution details</h3><div class="formgrid"><div class="field"><label>Institution name</label><input value="Society Savings" readonly></div><div class="field"><label>Currency</label><input value="INR (₹)" readonly></div><div class="field"><label>Account prefix</label><input value="1512" readonly></div><div class="field"><label>Institution identifier</label><input value="FINANCLE00001" readonly></div></div><p style="font-size:11px;color:var(--muted)">Displayed identifiers are configuration examples. The institution identifier is not represented as a bank-issued IFSC.</p></div>
+<div class="heading"><div><h1>System Settings</h1><p>Institution configuration</p></div></div>
+<div class="panel">
+<h3>Connection details</h3>
+<p class="muted">Supabase project is configured in this file. The publishable/anon key is intended for browser use only when Row Level Security is correctly configured. Never put a service-role key or database password in frontend code.</p>
+<p class="muted">Institution name: Society Savings · Currency: INR (₹)</p>
+</div>
 </section>
 </div>
 </div>
-
-<script>
-const navButtons=document.querySelectorAll('.nav');
-navButtons.forEach(button=>{
-button.addEventListener('click',()=>{
-navButtons.forEach(b=>b.classList.remove('active'));
-button.classList.add('active');
-document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-document.getElementById(button.dataset.page).classList.add('active');
-document.getElementById('topTitle').textContent=button.textContent.trim();
-document.getElementById('sidebar').classList.remove('open');
-window.scrollTo(0,0);
-});
-});
-document.getElementById('menu').addEventListener('click',()=>document.getElementById('sidebar').classList.toggle('open'));
-function filterRows(input,id){
-const rows=document.querySelectorAll('#'+id+' tbody tr');
-const query=input.value.toLowerCase();
-rows.forEach(row=>row.style.display=row.textContent.toLowerCase().includes(query)?'':'none');
-}
-</script>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+'use strict';
+
 const SUPABASE_URL = "https://mmgvfxqqnzqokeuojadp.supabase.co";
 const SUPABASE_KEY = "sb_publishable_bm16oFdCJ4oCyR4u8EaXJA_8GK4qXc8";
 
-const db = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const $ = id => document.getElementById(id);
+
+function safe(value){
+return String(value ?? '').replace(/[&<>"']/g,c=>({
+'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+}[c]));
+}
+
+function setStatus(id,ok,good='Connected',bad='Unavailable'){
+$(id).textContent=ok?good:bad;
+$(id).className='status '+(ok?'':'pending');
+}
+
+function showApp(user){
+$('loginScreen').hidden=true;
+$('app').hidden=false;
+$('adminLabel').textContent=user?.email||'Administrator';
+}
+
+function showLogin(message=''){
+$('app').hidden=true;
+$('loginScreen').hidden=false;
+$('loginMessage').textContent=message;
+}
+
+async function verifyAdmin(session){
+if(!session?.user)return false;
+
+const {data,error}=await db
+.from('admin_users')
+.select('role,is_active')
+.eq('id',session.user.id)
+.eq('is_active',true)
+.maybeSingle();
+
+if(error||!data){
+await db.auth.signOut();
+return false;
+}
+
+showApp(session.user);
+await refreshDashboard();
+return true;
+}
+
+$('adminLogin').addEventListener('click',async()=>{
+const email=$('adminEmail').value.trim();
+const password=$('adminPassword').value;
+
+$('loginMessage').textContent='Signing in…';
+$('adminLogin').disabled=true;
+
+try{
+const {data,error}=await db.auth.signInWithPassword({email,password});
+if(error)throw error;
+
+const allowed=await verifyAdmin(data.session);
+
+if(!allowed){
+showLogin('Access denied. Active admin access is required.');
+}
+
+}catch(e){
+$('loginMessage').textContent=e.message||'Sign-in failed.';
+}
+finally{
+$('adminLogin').disabled=false;
+}
+});
+
+$('logout').addEventListener('click',async()=>{
+await db.auth.signOut();
+showLogin('You have signed out.');
+});
+
+db.auth.onAuthStateChange(async(event,session)=>{
+if(event==='SIGNED_OUT')showLogin();
+});
+
+db.auth.getSession().then(({data,error})=>{
+if(error||!data.session)showLogin();
+else verifyAdmin(data.session);
+});
+
+const PAGE_SIZE = 25;
+
+const navButtons=document.querySelectorAll('.nav');
+
+navButtons.forEach(button=>button.addEventListener('click',()=>{
+navButtons.forEach(b=>b.classList.remove('active'));
+button.classList.add('active');
+
+document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+
+$(button.dataset.page).classList.add('active');
+$('topTitle').textContent=button.textContent.trim();
+
+$('sidebar').classList.remove('open');
+window.scrollTo(0,0);
+
+if(button.dataset.page==='customers')loadCustomers(true);
+if(button.dataset.page==='kyc')loadKyc(true);
+}));
+
+$('menu').addEventListener('click',()=>$('sidebar').classList.toggle('open'));
+
+let customersCache = [], kycCache = [];
+let customerOffset = 0, kycOffset = 0;
+let customerHasMore = true, kycHasMore = true;
+let customerBusy = false, kycBusy = false;
+
+async function loadCustomers(reset=false){
+
+if(customerBusy || (!customerHasMore && !reset))return;
+
+customerBusy=true;
+
+const button=$('customerLoadMore');
+button.disabled=true;
+button.textContent='Loading…';
+
+if(reset){
+customerOffset=0;
+customerHasMore=true;
+customersCache=[];
+$('customerRows').innerHTML='<tr><td colspan="3">Loading…</td></tr>';
+}
+
+const from=customerOffset;
+const to=customerOffset+PAGE_SIZE-1;
+
+const {data,error}=await db
+.from('customers')
+.select('id,full_name,mobile,kyc_status,created_at')
+.order('created_at',{ascending:false})
+.range(from,to);
+
+if(error){
+$('customerRows').innerHTML='<tr><td colspan="3">'+safe(error.message)+'</td></tr>';
+setStatus('customerState',false);
+customerBusy=false;
+button.disabled=false;
+button.textContent='Retry';
+return;
+}
+
+const batch=data||[];
+
+customersCache=customersCache.concat(batch);
+customerOffset+=batch.length;
+
+customerHasMore=batch.length===PAGE_SIZE;
+
+renderCustomers();
+setStatus('customerState',true);
+
+$('customerPageInfo').textContent=`Showing ${customersCache.length} records`;
+
+button.hidden=!customerHasMore;
+button.disabled=false;
+button.textContent='Load more';
+
+customerBusy=false;
+}
+
+function renderCustomers(){
+
+const q=$('customerSearch').value.toLowerCase();
+
+const rows=customersCache.filter(c=>
+(c.full_name||'').toLowerCase().includes(q)||
+(c.mobile||'').toLowerCase().includes(q)
 );
 
-console.log("Supabase client initialized");
-</script>
-<script>
-const main = document.querySelector('.main');
-if (main) main.style.display = 'none';
-
-const box = document.createElement('div');
-box.style.cssText = 'max-width:360px;margin:80px auto;padding:25px;background:#fff;border:1px solid #ddd;border-radius:14px;font-family:Arial';
-box.innerHTML = `
-  <h2>Admin Login</h2>
-  <p>Sign in to Society Savings</p>
-  <input id="adminEmail" type="email" placeholder="Admin email" style="width:100%;padding:12px;margin:8px 0;box-sizing:border-box">
-  <input id="adminPassword" type="password" placeholder="Password" style="width:100%;padding:12px;margin:8px 0;box-sizing:border-box">
-  <button id="adminLogin" style="width:100%;padding:12px;background:#173f35;color:white;border:0;border-radius:7px">Login</button>
-  <p id="loginMessage"></p>
-`;
-document.body.appendChild(box);
-
-async function checkAdmin(session) {
-  if (!session) return false;
-
-  const { data, error } = await db
-    .from('admin_users')
-    .select('role,is_active')
-    .eq('id', session.user.id)
-    .eq('is_active', true)
-    .maybeSingle();
-
-  if (error || !data) {
-    await db.auth.signOut();
-    return false;
-  }
-
-  box.remove();
-  if (main) main.style.display = '';
-  return true;
+$('customerRows').innerHTML=rows.length?
+rows.map(c=>`
+<tr>
+<td>${safe(c.full_name||'Unnamed')}</td>
+<td>${safe(c.mobile||'—')}</td>
+<td>
+<span class="status ${String(c.kyc_status||'pending').toLowerCase()==='approved'?'':'pending'}">
+${safe(c.kyc_status||'Pending')}
+</span>
+</td>
+</tr>
+`).join(''):
+'<tr><td colspan="3">No matching customers.</td></tr>';
 }
 
-document.getElementById('adminLogin').onclick = async () => {
-  const msg = document.getElementById('loginMessage');
-  msg.textContent = 'Checking...';
+$('customerSearch').addEventListener('input',renderCustomers);
 
-  const email = document.getElementById('adminEmail').value.trim();
-  const password = document.getElementById('adminPassword').value;
+$('customerLoadMore').addEventListener('click',()=>loadCustomers(false));
 
-  const { data, error } = await db.auth.signInWithPassword({
-    email, password
-  });
+async function loadKyc(reset=false){
 
-  if (error) {
-    msg.textContent = error.message;
-    return;
-  }
+if(kycBusy || (!kycHasMore && !reset))return;
 
-  const allowed = await checkAdmin(data.session);
-  if (!allowed) msg.textContent = 'Access denied. Contact administrator.';
-};
+kycBusy=true;
 
-db.auth.getSession().then(({ data }) => checkAdmin(data.session));
-</script>
-<script>
-const customerBox = document.createElement('section');
+const button=$('kycLoadMore');
+button.disabled=true;
+button.textContent='Loading…';
 
-customerBox.style.cssText =
-  'background:white;padding:20px;margin:20px;border-radius:12px;color:#222';
+if(reset){
+kycOffset=0;
+kycHasMore=true;
+kycCache=[];
+$('kycRows').textContent='Loading applications…';
+}
 
-customerBox.innerHTML = `
-  <h2>Customers</h2>
-  <button id="loadCustomers">Load Customers</button>
-  <div id="customerResults">Tap the button to load records.</div>
-`;
+const from=kycOffset;
+const to=kycOffset+PAGE_SIZE-1;
 
-document.querySelector('.main').appendChild(customerBox);
+const {data,error}=await db
+.from('kyc_submissions')
+.select('id,full_name,document_type,status,created_at')
+.order('created_at',{ascending:false})
+.range(from,to);
 
-document.getElementById('loadCustomers').onclick = async () => {
-  const result = document.getElementById('customerResults');
-  result.textContent = 'Loading...';
+if(error){
+$('kycRows').textContent='Unable to load applications: '+error.message;
+setStatus('kycState',false);
+kycBusy=false;
+button.disabled=false;
+button.textContent='Retry';
+return;
+}
 
-  const { data, error } = await db
-    .from('customers')
-    .select('id,full_name,mobile,kyc_status');
+const batch=data||[];
 
-  if (error) {
-    result.textContent = error.message;
-    return;
-  }
+kycCache=kycCache.concat(batch);
+kycOffset+=batch.length;
 
-  result.innerHTML = data.length
-    ? data.map(c =>
-        `<p>${c.full_name || 'Unnamed'} — ${c.mobile || 'No mobile'} — KYC: ${c.kyc_status || 'Pending'}</p>`
-      ).join('')
-    : 'No customers registered yet.';
-};
-</script>
+kycHasMore=batch.length===PAGE_SIZE;
 
-  <div id="kycManagement" style="padding:20px">
-<h2>KYC Management</h2>
-<button onclick="loadKycApplications()">Refresh Applications</button>
-<div id="kycApplications">Loading applications...</div>
+renderKyc();
+setStatus('kycState',true);
+
+$('kycPageInfo').textContent=`Showing ${kycCache.length} applications`;
+
+button.hidden=!kycHasMore;
+button.disabled=false;
+button.textContent='Load more';
+
+kycBusy=false;
+}
+
+function renderKyc(){
+
+const q=$('kycSearch').value.toLowerCase();
+
+const rows=kycCache.filter(k=>
+(k.full_name||'').toLowerCase().includes(q)||
+(k.document_type||'').toLowerCase().includes(q)
+);
+
+$('kycRows').innerHTML=rows.length?
+rows.map(k=>`
+<article style="border:1px solid var(--line);border-radius:12px;padding:17px;margin:10px 0">
+
+<h3 style="margin:0 0 8px">
+${safe(k.full_name||'Applicant')}
+</h3>
+
+<p class="muted">
+Document type: ${safe(k.document_type||'Not specified')}
+</p>
+
+<p class="muted">
+Submitted: ${safe(k.created_at?new Date(k.created_at).toLocaleString():'—')}
+</p>
+
+<p>
+Status:
+<span class="status ${String(k.status||'PENDING').toUpperCase()==='APPROVED'?'':'pending'}">
+${safe(k.status||'PENDING')}
+</span>
+</p>
+
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+
+<button class="action" data-review="${safe(k.id)}" data-status="APPROVED">
+Approve
+</button>
+
+<button class="action danger" data-review="${safe(k.id)}" data-status="REJECTED">
+Reject
+</button>
+
 </div>
-
-<script>
-async function loadKycApplications(){
- const box=document.getElementById("kycApplications");
- box.textContent="Loading applications...";
-
- try{
-  const {data,error}=await db
-   .from("kyc_submissions")
-   .select("*");
-
-  if(error) throw error;
-
-  if(!data || data.length===0){
-   box.textContent="No KYC applications found.";
-   return;
-  }
-
-  box.innerHTML=data.map(k=>`
-   <div style="background:white;padding:18px;margin:12px 0;border-radius:14px">
-    <h3>${escapeHtml(k.full_name||"Customer")}</h3>
-    <p>Document: ${escapeHtml(k.document_type||"")}</p>
-    <p>Status: ${escapeHtml(k.status||"PENDING")}</p>
-    <p>Document number: ${escapeHtml(k.document_number||"")}</p>
-    <button onclick="reviewKyc('${k.id}','APPROVED')">Approve</button>
-    <button style="background:#b42318" onclick="reviewKyc('${k.id}','REJECTED')">Reject</button>
-   </div>
-  `).join("");
-
- }catch(error){
-  box.textContent="Error: "+error.message;
- }
+</article>
+`).join(''):
+'<div class="empty">No matching KYC applications.</div>';
 }
 
-function escapeHtml(value){
- return String(value).replace(/[&<>"']/g,c=>({
- '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
- })[c]);
+$('kycSearch').addEventListener('input',renderKyc);
+
+$('refreshKyc').addEventListener('click',()=>loadKyc(true));
+
+$('kycLoadMore').addEventListener('click',()=>loadKyc(false));
+
+$('kycRows').addEventListener('click',async e=>{
+
+const button=e.target.closest('button[data-review]');
+
+if(!button)return;
+
+const id=button.dataset.review;
+const status=button.dataset.status;
+
+if(!confirm(`Confirm ${status.toLowerCase()} for this KYC application?`))return;
+
+button.disabled=true;
+
+// Database RLS must authorize this update.
+const {error}=await db
+.from('kyc_submissions')
+.update({status})
+.eq('id',id);
+
+if(error){
+alert('Update failed: '+error.message);
+button.disabled=false;
+return;
 }
 
+alert('KYC status updated.');
 
-  <script>
-async function reviewKyc(id,status){
- if(!confirm("Are you sure you want to "+status+" this application?"))return;
+await loadKyc(true);
+await refreshDashboard();
+});
 
- const {error}=await db
-  .from("kyc_submissions")
-  .update({status:status})
-  .eq("id",id);
+async function refreshDashboard(){
 
- if(error){
-  alert("Update failed: "+error.message);
-  return;
- }
+const [c,k]=await Promise.all([
 
- alert("KYC "+status+" successfully!");
- loadKycApplications();
+db.from('customers')
+.select('id',{count:'exact',head:true}),
+
+db.from('kyc_submissions')
+.select('id,status,full_name,created_at',{count:'exact'})
+
+]);
+
+if(!c.error){
+$('customerCount').textContent=c.count??0;
 }
-  </script>
+
+if(!k.error){
+
+kycCache=k.data||[];
+
+$('kycCount').textContent=k.count??0;
+
+$('pendingCount').textContent=kycCache.filter(x=>
+String(x.status||'PENDING').toUpperCase()==='PENDING'
+).length;
+
+setStatus('kycState',true);
+}
+
+if(!c.error){
+setStatus('customerState',true);
+}
+
+const {data,error}=await db
+.from('customers')
+.select('full_name,mobile,created_at')
+.order('created_at',{ascending:false})
+.limit(5);
+
+$('recentActivity').innerHTML=error?
+'<div class="empty">Customer activity unavailable.</div>':
+
+(data?.length?
+data.map(x=>`
+<div class="checkrow">
+<b>${safe(x.full_name||'Customer')}</b>
+<span class="muted">${safe(x.mobile||'')}</span>
+</div>
+`).join(''):
+
+'<div class="empty">No customer records found.</div>'
+);
+}
+
+</script>
+</body>
 </html>
