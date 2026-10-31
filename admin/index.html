@@ -482,7 +482,7 @@ const to=kycOffset+PAGE_SIZE-1;
 
 const {data,error}=await db
 .from('kyc_submissions')
-.select('id,full_name,document_type,status,created_at')
+.select('id,customer_id,full_name,document_type,status,created_at')
 .order('created_at',{ascending:false})
 .range(from,to);
 
@@ -496,10 +496,8 @@ return;
 }
 
 const batch=data||[];
-
 kycCache=kycCache.concat(batch);
 kycOffset+=batch.length;
-
 kycHasMore=batch.length===PAGE_SIZE;
 
 renderKyc();
@@ -510,7 +508,6 @@ $('kycPageInfo').textContent=`Showing ${kycCache.length} applications`;
 button.hidden=!kycHasMore;
 button.disabled=false;
 button.textContent='Load more';
-
 kycBusy=false;
 }
 
@@ -524,113 +521,180 @@ const rows=kycCache.filter(k=>
 );
 
 $('kycRows').innerHTML=rows.length?
-rows.map(k=>`
+rows.map(k=>{
+const status=String(k.status||'PENDING').toUpperCase();
+const pending=status==='PENDING';
+
+return `
 <article style="border:1px solid var(--line);border-radius:12px;padding:17px;margin:10px 0">
-
-<h3 style="margin:0 0 8px">
-${safe(k.full_name||'Applicant')}
-</h3>
-
-<p class="muted">
-Document type: ${safe(k.document_type||'Not specified')}
-</p>
-
-<p class="muted">
-Submitted: ${safe(k.created_at?new Date(k.created_at).toLocaleString():'—')}
-</p>
-
-<p>
-Status:
-<span class="status ${String(k.status||'PENDING').toUpperCase()==='APPROVED'?'':'pending'}">
-${safe(k.status||'PENDING')}
-</span>
-</p>
-
+<h3>${safe(k.full_name||'Applicant')}</h3>
+<p class="muted">Document type: ${safe(k.document_type||'Not specified')}</p>
+<p class="muted">Submitted: ${safe(k.created_at?new Date(k.created_at).toLocaleString():'—')}</p>
+<p>Status: <span class="status ${pending?'pending':''}">${safe(status)}</span></p>
 <div style="display:flex;gap:8px;flex-wrap:wrap">
-
-<button class="action" data-review="${safe(k.id)}" data-status="APPROVED">
-Approve
-</button>
-
-<button class="action danger" data-review="${safe(k.id)}" data-status="REJECTED">
-Reject
-</button>
-
+<button class="action" data-view="${safe(k.id)}">View Details</button>
+${pending?`
+<button class="primary" data-review="${safe(k.id)}" data-status="APPROVED">Approve</button>
+<button class="action danger" data-review="${safe(k.id)}" data-status="REJECTED">Reject</button>
+`:''}
 </div>
-</article>
-`).join(''):
+</article>`;
+}).join(''):
 '<div class="empty">No matching KYC applications.</div>';
-}
-
-$('kycSearch').addEventListener('input',renderKyc);
-
+}$('kycSearch').addEventListener('input',renderKyc);
 $('refreshKyc').addEventListener('click',()=>loadKyc(true));
-
 $('kycLoadMore').addEventListener('click',()=>loadKyc(false));
 
-$('kycRows').addEventListener('click',async e=>{
+function detail(label,value){
+return `<div class="kyc-detail">
+<small>${safe(label)}</small>
+<strong>${safe(value||'Not provided')}</strong>
+</div>`;
+}
 
-const button=e.target.closest('button[data-review]');
+async function viewKycDetails(id){
 
-if(!button)return;
+$('kycModalBackdrop').classList.add('open');
+$('kycModalBody').innerHTML='<div class="empty">Loading application details…</div>';
 
-const id=button.dataset.review;
-const status=button.dataset.status;
-
-if(!confirm(`Confirm ${status.toLowerCase()} for this KYC application?`))return;
-
-button.disabled=true;
-
-// Database RLS must authorize this update.
-const {error}=await db
+const {data,error}=await db
 .from('kyc_submissions')
-.update({status})
-.eq('id',id);
+.select('*')
+.eq('id',id)
+.single();
 
-if(error){
-alert('Update failed: '+error.message);
-button.disabled=false;
+if(error||!data){
+$('kycModalBody').innerHTML='<div class="empty">Unable to load details: '+safe(error?.message||'Application not found')+'</div>';
 return;
 }
 
-alert('KYC status updated.');
+const d=data;
+const status=String(d.status||'PENDING').toUpperCase();
+
+$('kycModalBody').innerHTML=`
+<h3>Personal Information</h3>
+<div class="kyc-detail-grid">
+${detail('Full Legal Name',d.full_name)}
+${detail('Date of Birth',d.date_of_birth)}
+${detail("Father's Name",d.father_name)}
+${detail("Mother's Name",d.mother_name)}
+${detail('Annual Income',d.annual_income)}
+${detail('Occupation',d.occupation)}
+</div>
+
+<h3>Identity Document</h3>
+<div class="kyc-detail-grid">
+${detail('Document Type',d.document_type)}
+${detail('Document Number','•••••••• (masked for security)')}
+</div>
+
+<h3>Residential Address</h3>
+<div class="kyc-detail-grid">
+${detail('House / Flat',d.house_address)}
+${detail('Street / Locality',d.locality)}
+${detail('Village / City',d.city)}
+${detail('Post Office',d.post_office)}
+${detail('Police Station',d.police_station)}
+${detail('District',d.district)}
+${detail('State',d.state)}
+${detail('PIN Code',d.pin_code)}
+</div>
+
+<h3>Application Information</h3>
+<div class="kyc-detail-grid">
+${detail('Application ID',d.id)}
+${detail('Customer ID',d.customer_id)}
+${detail('Submitted',d.created_at?new Date(d.created_at).toLocaleString():'—')}
+${detail('Status',status)}
+</div>
+
+<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px">
+${status==='PENDING'?`
+<button class="primary" data-modal-review="${safe(d.id)}" data-status="APPROVED">Approve</button>
+<button class="action danger" data-modal-review="${safe(d.id)}" data-status="REJECTED">Reject</button>
+`:''}
+<button class="action" id="closeDetailsBottom">Close</button>
+</div>`;
+}
+
+$('kycRows').addEventListener('click',async e=>{
+
+const view=e.target.closest('[data-view]');
+if(view){
+await viewKycDetails(view.dataset.view);
+return;
+}
+
+const button=e.target.closest('[data-review]');
+if(!button)return;
+
+await updateKycStatus(button.dataset.review,button.dataset.status);
+});
+
+$('kycModalBody').addEventListener('click',async e=>{
+
+if(e.target.id==='closeDetailsBottom'){
+closeKycModal();
+return;
+}
+
+const button=e.target.closest('[data-modal-review]');
+if(button){
+await updateKycStatus(button.dataset.modalReview,button.dataset.status);
+closeKycModal();
+}
+});
+
+async function updateKycStatus(id,status){
+
+if(!confirm('Confirm '+status+' for this KYC application?'))return;
+
+const {error}=await db
+.from('kyc_submissions')
+.update({status})
+.eq('id',id)
+.eq('status','PENDING');
+
+if(error){
+alert('Update failed: '+error.message);
+return;
+}
+
+alert('KYC status updated successfully.');
 
 await loadKyc(true);
 await refreshDashboard();
+}
+
+function closeKycModal(){
+$('kycModalBackdrop').classList.remove('open');
+}
+
+$('closeKycModal').addEventListener('click',closeKycModal);
+
+$('kycModalBackdrop').addEventListener('click',e=>{
+if(e.target===$('kycModalBackdrop'))closeKycModal();
 });
 
 async function refreshDashboard(){
 
 const [c,k]=await Promise.all([
-
-db.from('customers')
-.select('id',{count:'exact',head:true}),
-
-db.from('kyc_submissions')
-.select('id,status,full_name,created_at',{count:'exact'})
-
+db.from('customers').select('id',{count:'exact',head:true}),
+db.from('kyc_submissions').select('id,status,full_name,created_at',{count:'exact'})
 ]);
 
-if(!c.error){
-$('customerCount').textContent=c.count??0;
-}
+if(!c.error)$('customerCount').textContent=c.count??0;
 
 if(!k.error){
-
 kycCache=k.data||[];
-
 $('kycCount').textContent=k.count??0;
-
 $('pendingCount').textContent=kycCache.filter(x=>
 String(x.status||'PENDING').toUpperCase()==='PENDING'
 ).length;
-
 setStatus('kycState',true);
 }
 
-if(!c.error){
-setStatus('customerState',true);
-}
+if(!c.error)setStatus('customerState',true);
 
 const {data,error}=await db
 .from('customers')
@@ -640,7 +704,6 @@ const {data,error}=await db
 
 $('recentActivity').innerHTML=error?
 '<div class="empty">Customer activity unavailable.</div>':
-
 (data?.length?
 data.map(x=>`
 <div class="checkrow">
@@ -648,11 +711,8 @@ data.map(x=>`
 <span class="muted">${safe(x.mobile||'')}</span>
 </div>
 `).join(''):
-
-'<div class="empty">No customer records found.</div>'
-);
+'<div class="empty">No customer records found.</div>');
 }
-
 </script>
 </body>
 </html>
