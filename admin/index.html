@@ -925,7 +925,167 @@ data.map(x=>`
 `).join(''):
 '<div class="empty">No customer records found.</div>');
 }
-// ACCOUNT MANAGEMENT
+// DEPOSIT REQUEST MANAGEMENT
+
+let depositCache = [];
+let depositOffset = 0;
+let depositHasMore = true;
+let depositBusy = false;
+
+async function loadDeposits(reset = false) {
+    if (depositBusy || (!depositHasMore && !reset)) return;
+
+    depositBusy = true;
+
+    const button = $('depositLoadMore');
+    button.disabled = true;
+    button.textContent = 'Loading...';
+
+    if (reset) {
+        depositOffset = 0;
+        depositHasMore = true;
+        depositCache = [];
+        $('depositRows').textContent = 'Loading requests...';
+    }
+
+    try {
+        const { data, error } = await db
+            .from('deposit_requests')
+            .select('id,customer_id,account_id,amount_paise,utr_number,status,created_at,admin_remark')
+            .order('created_at', { ascending: false })
+            .range(depositOffset, depositOffset + PAGE_SIZE - 1);
+
+        if (error) throw error;
+
+        const batch = data || [];
+        depositCache = depositCache.concat(batch);
+        depositOffset += batch.length;
+        depositHasMore = batch.length === PAGE_SIZE;
+
+        renderDeposits();
+
+        $('depositPageInfo').textContent =
+            `Showing ${depositCache.length} requests`;
+
+        button.hidden = !depositHasMore;
+        button.textContent = 'Load more';
+
+    } catch (error) {
+        $('depositRows').textContent =
+            'Unable to load requests: ' + error.message;
+        button.textContent = 'Retry';
+    } finally {
+        depositBusy = false;
+        button.disabled = false;
+    }
+}
+
+function renderDeposits() {
+    const q = $('depositSearch').value.trim().toLowerCase();
+
+    const rows = depositCache.filter(d =>
+        (d.utr_number || '').toLowerCase().includes(q)
+    );
+
+    $('depositRows').innerHTML = rows.length
+        ? rows.map(d => `
+            <article style="border:1px solid var(--line);
+                border-radius:12px;padding:16px;margin:10px 0">
+
+                <h3>₹${(Number(d.amount_paise)/100).toFixed(2)}</h3>
+
+                <p class="muted">UTR: ${safe(d.utr_number)}</p>
+                <p class="muted">Customer ID: ${safe(d.customer_id)}</p>
+                <p class="muted">Account ID: ${safe(d.account_id)}</p>
+                <p class="muted">Submitted: ${
+                    safe(new Date(d.created_at).toLocaleString())
+                }</p>
+
+                <p>Status:
+                    <span class="status ${
+                        d.status === 'PENDING' ? 'pending' : ''
+                    }">${safe(d.status)}</span>
+                </p>
+
+                ${d.status === 'PENDING' ? `
+                    <div class="tools">
+                        <button class="primary"
+                            data-deposit-action="APPROVE"
+                            data-id="${safe(d.id)}">
+                            Approve
+                        </button>
+
+                        <button class="action danger"
+                            data-deposit-action="REJECT"
+                            data-id="${safe(d.id)}">
+                            Reject
+                        </button>
+                    </div>
+                ` : ''}
+            </article>
+        `).join('')
+        : '<div class="empty">No matching deposit requests.</div>';
+}
+
+$('depositSearch').addEventListener('input', renderDeposits);
+
+$('refreshDeposits').addEventListener('click', () =>
+    loadDeposits(true)
+);
+
+$('depositLoadMore').addEventListener('click', () =>
+    loadDeposits(false)
+);
+
+$('depositRows').addEventListener('click', async event => {
+    const button = event.target.closest('[data-deposit-action]');
+    if (!button) return;
+
+    const id = button.dataset.id;
+    const action = button.dataset.depositAction;
+
+    let reason = '';
+
+    if (action === 'APPROVE') {
+        if (!confirm(
+            'Have you personally verified this payment in the official bank or UPI transaction history?'
+        )) return;
+
+        reason = prompt('Enter payment verification reference/reason:');
+        if (!reason || reason.trim().length < 5) {
+            alert('A verification reason is required.');
+            return;
+        }
+    }
+
+    if (action === 'REJECT') {
+        reason = prompt('Enter the rejection reason:');
+        if (!reason || reason.trim().length < 5) {
+            alert('A rejection reason is required.');
+            return;
+        }
+    }
+
+    button.disabled = true;
+
+    try {
+        const { error } = await db.rpc('admin_review_deposit', {
+            p_request_id: id,
+            p_action: action,
+            p_reason: reason.trim()
+        });
+
+        if (error) throw error;
+
+        alert('Deposit request reviewed successfully.');
+        await loadDeposits(true);
+
+    } catch (error) {
+        alert('Review failed: ' + error.message);
+        button.disabled = false;
+    }
+});
+  // ACCOUNT MANAGEMENT
 
 let currentAccount = null;
 
