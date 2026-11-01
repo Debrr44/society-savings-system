@@ -686,12 +686,48 @@ function showUTRForm(){
 document.getElementById("utrForm").classList.remove("hidden");
 }
 
-function submitDeposit(){
-document.getElementById("depositMessage").textContent=
-"Deposit requests are not active yet. Please do not treat this screen as a payment confirmation.";
-}
+async function submitDeposit(){
+    const amount = Number(
+        document.getElementById("depositAmount").value
+    );
+    const utr = document.getElementById("utrNumber").value.trim();
+    const msg = document.getElementById("depositMessage");
 
-async function logout(){
+      if (!Number.isFinite(amount) || amount <= 0) {
+        msg.textContent = "Enter a valid amount.";
+        return;
+    }
+
+    if (!utr || utr.length < 6 || utr.length > 40) {
+        msg.textContent = "Enter a valid UTR number.";
+        return;
+    }
+      const btn = document.querySelector("#utrForm button");
+    btn.disabled = true;
+    msg.textContent = "Submitting request...";
+
+    try {
+        const { data, error } = await db.rpc(
+            "submit_deposit_request",
+              {
+                p_amount_rupees: amount,
+                p_utr_number: utr
+            }
+        );
+
+        if (error) throw error;
+                  msg.textContent =
+            "Request submitted successfully! Status: PENDING.";
+
+        document.getElementById("utrNumber").value = "";
+
+    } catch (error) {
+        msg.textContent = error.message || "Submission failed.";
+    } finally {
+        btn.disabled = false;
+    }
+}
+          async function logout(){
 
 await db.auth.signOut();
 
