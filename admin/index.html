@@ -111,6 +111,7 @@ td{padding:14px 10px;border-bottom:1px solid #f0f2f3}
 <div class="group">CUSTOMER OPERATIONS</div>
 <button class="nav" data-page="customers"><i>♙</i>Customers</button>
 <button class="nav" data-page="kyc"><i>✓</i>KYC Verification</button>
+  <button class="nav" data-page="deposits">₹ Deposit Requests</button>
 <div class="group">FINANCIAL OPERATIONS</div>
 <button class="nav" data-page="accounts"><i>▣</i>Account Management</button>
 <button class="nav" data-page="transactions"><i>▤</i>Transactions</button>
@@ -195,6 +196,40 @@ td{padding:14px 10px;border-bottom:1px solid #f0f2f3}
 </div>
 </div>
 </section>
+
+  <section class="page" id="deposits">
+    <div class="heading">
+        <div>
+            <h1>Deposit Requests</h1>
+            <p>Review and verify customer UPI payments.</p>
+        </div>
+        <span class="badge">MANUAL VERIFICATION</span>
+    </div>
+
+    <div class="panel">
+        <h3>Customer Deposit Requests</h3>
+        <div class="tools">
+            <input class="search" id="depositSearch"
+                placeholder="Search by UTR number">
+            <button class="action" id="refreshDeposits">
+                Refresh
+            </button>
+        </div>
+              <div id="depositRows" class="empty">
+            Loading deposit requests...
+        </div>
+
+        <div class="tools">
+            <span class="muted" id="depositPageInfo">
+                Showing 0 requests
+            </span>
+            <button class="action" id="depositLoadMore">
+                Load more
+            </button>
+        </div>
+    </div>
+  </section>
+          
 
 <section class="page" id="accounts">
 
